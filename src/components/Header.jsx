@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom';
-import { useUiStore } from '../store/uiStore';
+import useUIStore from '../store/useUIStore';
 import { useCartStore } from '../store/cartStore';
 import { useState } from "react";
 import { useCategories } from '../hooks/useCategories';
 
 export default function Header() {
-  const mobileNavOpen = useUiStore((state) => state.mobileNavOpen);
-  const toggleMobileNav = useUiStore((state) => state.toggleMobileNav);
-  const closeMobileNav = useUiStore((state) => state.closeMobileNav);
+  const cartOpen = useUIStore((state) => state.cartOpen);
+  const toggleCart = useUIStore((state) => state.toggleCart);
+  const menuOpen = useUIStore((state) => state.menuOpen);
+  const toggleMenu = useUIStore((state) => state.toggleMenu);
+  const closeAll = useUIStore((state) => state.closeAll);
+  
   const items = useCartStore((state) => state.items);
   const cartCount = items?.length || 0;
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -28,11 +31,11 @@ export default function Header() {
           {/* Mobile Menu Toggle */}
           <button 
             className="lg:hidden p-2 -ml-2 text-brand-ink" 
-            onClick={toggleMobileNav}
-            aria-expanded={mobileNavOpen}
+            onClick={toggleMenu}
+            aria-expanded={menuOpen}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {mobileNavOpen ? (
+              {menuOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
               ) : (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -84,14 +87,14 @@ export default function Header() {
           <Link to="/account/wishlist" className="hover:text-brand-coral transition-colors hidden sm:block" aria-label="Wishlist">
              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
           </Link>
-          <Link 
-            to="/cart"
+          <div 
+            onClick={toggleCart}
             className="hover:text-brand-coral transition-colors relative cursor-pointer" 
             aria-label="Cart"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
             {cartCount > 0 && <span className="absolute -top-1 -right-2 bg-brand-coral text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">{cartCount}</span>}
-          </Link>
+          </div>
           <Link to="/account" className="hover:text-brand-coral transition-colors hidden sm:block mr-2" aria-label="Account">
              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
           </Link>
@@ -174,19 +177,19 @@ export default function Header() {
       </div>
 
       {/* Mobile Menu Panel */}
-      {mobileNavOpen && (
+      {menuOpen && (
         <div className="lg:hidden absolute top-full left-0 w-full bg-white shadow-xl border-t border-brand-peach overflow-y-auto max-h-[80vh]">
           <nav className="flex flex-col py-4 px-6 font-body font-semibold text-brand-ink">
-             <Link to="/" onClick={closeMobileNav} className="py-3 border-b border-gray-100 text-brand-coral">Home</Link>
+             <Link to="/" onClick={closeAll} className="py-3 border-b border-gray-100 text-brand-coral">Home</Link>
              <div className="py-3 border-b border-gray-100">
                <span className="text-gray-400 text-sm mb-2 block uppercase tracking-wider">Shop</span>
                <div className="flex flex-col pl-4 gap-2">
-                 <Link to="/shop" onClick={closeMobileNav} className="hover:text-brand-coral font-semibold">All Products</Link>
+                 <Link to="/shop" onClick={closeAll} className="hover:text-brand-coral font-semibold">All Products</Link>
                  {categories.map((cat) => (
                    <Link
                      key={cat.id}
                      to={`/shop?category=${cat.slug}`}
-                     onClick={closeMobileNav}
+                     onClick={closeAll}
                      className="hover:text-brand-coral font-normal text-sm"
                    >
                      {cat.name}
@@ -194,14 +197,14 @@ export default function Header() {
                  ))}
                </div>
              </div>
-             <Link to="/blogs/news" onClick={closeMobileNav} className="py-3 border-b border-gray-100 hover:text-brand-coral">Blog</Link>
-             <Link to="/contact" onClick={closeMobileNav} className="py-3 border-b border-gray-100 hover:text-brand-coral">Contact</Link>
+             <Link to="/blogs/news" onClick={closeAll} className="py-3 border-b border-gray-100 hover:text-brand-coral">Blog</Link>
+             <Link to="/contact" onClick={closeAll} className="py-3 border-b border-gray-100 hover:text-brand-coral">Contact</Link>
              <div className="py-3 border-b border-gray-100">
                <span className="text-gray-400 text-sm mb-2 block uppercase tracking-wider">Pages</span>
                <div className="flex flex-col pl-4 gap-2">
-                 <Link to="/about" onClick={closeMobileNav} className="hover:text-brand-coral font-normal text-sm">About Us</Link>
-                 <Link to="/faq" onClick={closeMobileNav} className="hover:text-brand-coral font-normal text-sm">FAQ</Link>
-                 <Link to="/terms" onClick={closeMobileNav} className="hover:text-brand-coral font-normal text-sm">Terms & Privacy</Link>
+                 <Link to="/about" onClick={closeAll} className="hover:text-brand-coral font-normal text-sm">About Us</Link>
+                 <Link to="/faq" onClick={closeAll} className="hover:text-brand-coral font-normal text-sm">FAQ</Link>
+                 <Link to="/terms" onClick={closeAll} className="hover:text-brand-coral font-normal text-sm">Terms & Privacy</Link>
                </div>
              </div>
           </nav>

@@ -3,6 +3,7 @@ import Header from './Header';
 import Footer from './Footer';
 import CartDrawer from './CartDrawer';
 import useDataStore from '../store/useDataStore';
+import ScrollToTop from '../components/utils/ScrollToTop';
 
 const MARQUEE_ITEMS = [
   "🎁 40% OFF Store Wide — Use Code: KIDDO",
@@ -49,6 +50,7 @@ export default function Layout({ children }) {
 
   return (
     <>
+      <ScrollToTop />
       {/* ── Top Info Bar ── */}
       <div className="top-bar">
         <div className="top-bar-inner">

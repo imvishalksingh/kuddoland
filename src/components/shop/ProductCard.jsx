@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "../../store/cartStore";
 import { useWishlist } from "../../hooks/useWishlist";
+import useUIStore from "../../store/useUIStore";
 import { clsx } from "clsx";
 
 const PINK = "#F472B6";
@@ -64,6 +65,7 @@ export function ProductCard({ product }) {
   const navigate = useNavigate();
   const addItem = useCartStore((state) => state.addItem);
   const { isWishlisted, toggleWishlist } = useWishlist();
+  const setCartOpen = useUIStore((state) => state.setCartOpen);
 
   const [selectedColor, setSelectedColor] = useState(0);
   const [added, setAdded] = useState(false);
@@ -78,6 +80,7 @@ export function ProductCard({ product }) {
     if (added) return;
     addItem(product, 1);
     setAdded(true);
+    setCartOpen(true);
     setTimeout(() => setAdded(false), 2500);
   };
 
