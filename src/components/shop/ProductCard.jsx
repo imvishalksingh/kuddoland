@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "../../store/cartStore";
 import { useWishlist } from "../../hooks/useWishlist";
+import { clsx } from "clsx";
 
 const PINK = "#F472B6";
 const PINK_BG = "#FDF2F8";
@@ -66,7 +67,6 @@ export function ProductCard({ product }) {
 
   const [selectedColor, setSelectedColor] = useState(0);
   const [added, setAdded] = useState(false);
-  const [hovered, setHovered] = useState(false);
 
   const liked = isWishlisted(product.id);
   const tag = product.featured ? "Bestseller" : (product.price > 699 ? "Hot" : "New");
@@ -83,17 +83,8 @@ export function ProductCard({ product }) {
 
   return (
     <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       onClick={() => navigate(`/shop/${product.slug}`)}
-      className="relative w-full flex-shrink-0 cursor-pointer overflow-hidden bg-white transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-      style={{
-        borderRadius: "20px",
-        boxShadow: hovered
-          ? "0 16px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06)"
-          : "0 2px 10px rgba(0,0,0,0.06)",
-        transform: hovered ? "translateY(-5px)" : "translateY(0)",
-      }}
+      className="group relative w-full flex-shrink-0 cursor-pointer overflow-hidden rounded-[20px] bg-white shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1.5 hover:shadow-xl"
     >
       {/* Image area */}
       <div className="relative w-full pt-[100%] bg-[#F5F5F5] overflow-hidden">
@@ -102,14 +93,10 @@ export function ProductCard({ product }) {
             <img
               src={image}
               alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-[400ms] ease-out"
-              style={{ transform: hovered ? "scale(1.07)" : "scale(1)" }}
+              className="w-full h-full object-cover transition-transform duration-[400ms] ease-out group-hover:scale-105"
             />
           ) : (
-            <div 
-              className="text-[64px] transition-transform duration-[350ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] opacity-[0.85] select-none"
-              style={{ transform: hovered ? "scale(1.1) translateY(-4px)" : "scale(1)" }}
-            >
+            <div className="text-[64px] transition-transform duration-[350ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] opacity-[0.85] select-none group-hover:scale-110 group-hover:-translate-y-1">
               {emojiMap[parseInt(product.id.toString().slice(-1)) % 6 + 1] || "🧸"}
             </div>
           )}
@@ -149,15 +136,15 @@ export function ProductCard({ product }) {
             <button
               key={btn.key}
               onClick={btn.onClick}
-              className="flex items-center justify-center w-8 h-8 rounded-full border border-[#F0F0F0] backdrop-blur-sm shadow-md transition-all duration-[280ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] sm:w-9 sm:h-9"
+              className={clsx(
+                "flex items-center justify-center w-8 h-8 rounded-full border border-[#F0F0F0] backdrop-blur-sm shadow-md transition-all duration-[280ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] sm:w-9 sm:h-9",
+                btn.alwaysShow 
+                  ? "opacity-100 translate-x-0 scale-100" 
+                  : "opacity-100 translate-x-0 scale-100 md:opacity-0 md:translate-x-2 md:scale-90 md:group-hover:opacity-100 md:group-hover:translate-x-0 md:group-hover:scale-100 md:pointer-events-none md:group-hover:pointer-events-auto"
+              )}
               style={{
                 background: btn.bgOverride || "rgba(255,255,255,0.95)",
-                opacity: hovered || btn.alwaysShow ? 1 : 0,
-                transform: hovered || btn.alwaysShow
-                  ? "translateX(0) scale(1)"
-                  : "translateX(10px) scale(0.8)",
                 transitionDelay: `${i * 45}ms`,
-                pointerEvents: hovered || btn.alwaysShow ? "auto" : "none",
               }}
             >
               {btn.icon}
@@ -168,13 +155,13 @@ export function ProductCard({ product }) {
         {/* Quick Add Button */}
         <button
           onClick={handleAdd}
-          className="absolute bottom-3 left-3 right-3 py-2.5 text-white text-[11px] font-bold rounded-[14px] shadow-lg transition-all duration-[350ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] z-[10] flex items-center justify-center gap-2"
+          className={clsx(
+            "absolute bottom-3 left-3 right-3 py-2.5 text-white text-[11px] font-bold rounded-[14px] shadow-lg transition-all duration-[350ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] z-[10] flex items-center justify-center gap-2",
+            "opacity-100 translate-y-0 md:opacity-0 md:translate-y-3 md:group-hover:opacity-100 md:group-hover:translate-y-0 md:pointer-events-none md:group-hover:pointer-events-auto"
+          )}
           style={{ 
             fontFamily: "'DM Sans', sans-serif",
-            opacity: hovered ? 1 : 0,
-            transform: hovered ? "translateY(0)" : "translateY(12px)",
             backgroundColor: added ? "#22C55E" : "#111827",
-            pointerEvents: hovered ? "auto" : "none"
           }}
         >
           {added ? (
