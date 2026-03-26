@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Outfit:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-orange-50 font-body text-slate-800 antialiased;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at top left, rgba(255, 203, 119, 0.22), transparent 24%),
+      linear-gradient(180deg, #fffaf5 0%, #fff4eb 100%);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #f97360 #fde7dc;
+  }
+}
+
+@layer components {
+  .page-shell {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .panel {
+    @apply rounded-[28px] border border-orange-100 bg-white/90 shadow-card backdrop-blur;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.24em] text-orange-600;
+  }
+
+  .heading-display {
+    @apply font-display text-4xl font-extrabold text-brand-ink sm:text-5xl;
+  }
+}

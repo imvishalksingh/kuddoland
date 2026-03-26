@@ -1,0 +1,66 @@
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\components\shop\ProductCard.jsx[24m[0m
+[0m  [2m48:9[22m  [31merror[39m  'handleBuyNow' is assigned a value but never used  [2mno-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\About.jsx[24m[0m
+[0m  [2m108:55[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Catalog.jsx[24m[0m
+[0m  [2m6:7[22m  [31merror[39m  'COLLECTIONS' is assigned a value but never used  [2mno-unused-vars[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\CheckoutPage.jsx[24m[0m
+[0m   [2m4:10[22m  [31merror[39m  'createOrder' is defined but never used     [2mno-unused-vars[22m[0m
+[0m  [2m13:9[22m   [31merror[39m  'clear' is assigned a value but never used  [2mno-unused-vars[22m[0m
+[0m  [2m67:12[22m  [31merror[39m  'Link' is not defined                       [2mreact/jsx-no-undef[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\CollectionPage.jsx[24m[0m
+[0m  [2m59:20[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\FAQ.jsx[24m[0m
+[0m  [2m57:86[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m88:18[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m88:40[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Home.jsx[24m[0m
+[0m    [2m1:10[22m  [31merror[39m    'useState' is defined but never used                                                                                                                                                             [2mno-unused-vars[22m[0m
+[0m   [2m51:9[22m   [33mwarning[39m  The 'products' logical expression could make the dependencies of useMemo Hook (at line 53) change on every render. To fix this, wrap the initialization of 'products' in its own useMemo() Hook  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m   [2m51:9[22m   [33mwarning[39m  The 'products' logical expression could make the dependencies of useMemo Hook (at line 54) change on every render. To fix this, wrap the initialization of 'products' in its own useMemo() Hook  [2mreact-hooks/exhaustive-deps[22m[0m
+[0m  [2m154:93[22m  [31merror[39m    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Login.jsx[24m[0m
+[0m  [2m41:16[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\OrderConfirmationPage.jsx[24m[0m
+[0m  [2m45:57[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\ProductDetail.jsx[24m[0m
+[0m  [2m50:69[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m50:88[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Search.jsx[24m[0m
+[0m  [2m56:118[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m56:126[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m65:30[22m   [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m65:56[22m   [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m65:64[22m   [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\SearchPage.jsx[24m[0m
+[0m  [2m77:75[22m   [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m77:114[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m77:125[22m  [31merror[39m  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\UtilityPages.jsx[24m[0m
+[0m   [2m27:161[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m   [2m52:81[22m   [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m176:120[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m181:62[22m   [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m  [2m183:20[22m   [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Wishlist.jsx[24m[0m
+[0m  [2m19:25[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[4mC:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\account\AccountPages.jsx[24m[0m
+[0m  [2m301:73[22m  [31merror[39m  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  [2mreact/no-unescaped-entities[22m[0m
+[0m[0m
+[0m[31m[1m✖ 33 problems (31 errors, 2 warnings)[22m[39m[0m
+[0m[31m[1m[22m[39m[0m

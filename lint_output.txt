@@ -1,0 +1,243 @@
+﻿
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\App.jsx
+  1:10  error  'RouterProvider' is defined but never used  no-unused-vars
+  2:10  error  'AppProviders' is defined but never used    no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\app\AppProviders.jsx
+  2:10  error  'QueryClientProvider' is defined but never used  no-unused-vars
+  3:10  error  'HelmetProvider' is defined but never used       no-unused-vars
+  4:10  error  'Toaster' is defined but never used              no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\app\router.jsx
+   1:10   error  'Navigate' is defined but never used                no-unused-vars
+   2:10   error  'AdminLayout' is defined but never used             no-unused-vars
+   3:10   error  'AccountLayout' is defined but never used           no-unused-vars
+   4:10   error  'MainLayout' is defined but never used              no-unused-vars
+   5:10   error  'RouteGuard' is defined but never used              no-unused-vars
+   6:10   error  'ErrorBoundaryPage' is defined but never used       no-unused-vars
+   7:10   error  'HomePage' is defined but never used                no-unused-vars
+   8:10   error  'ShopPage' is defined but never used                no-unused-vars
+   9:10   error  'ProductDetailPage' is defined but never used       no-unused-vars
+  10:10   error  'CartPage' is defined but never used                no-unused-vars
+  11:10   error  'CheckoutPage' is defined but never used            no-unused-vars
+  12:10   error  'SearchPage' is defined but never used              no-unused-vars
+  13:10   error  'LoginPage' is defined but never used               no-unused-vars
+  13:21   error  'RegisterPage' is defined but never used            no-unused-vars
+  13:35   error  'ForgotPasswordPage' is defined but never used      no-unused-vars
+  13:55   error  'ResetPasswordPage' is defined but never used       no-unused-vars
+  13:74   error  'VerifyEmailPage' is defined but never used         no-unused-vars
+  14:10   error  'OrderConfirmationPage' is defined but never used   no-unused-vars
+  15:10   error  'PaymentPage' is defined but never used             no-unused-vars
+  16:10   error  'TrackOrderPage' is defined but never used          no-unused-vars
+  17:10   error  'AboutPage' is defined but never used               no-unused-vars
+  17:21   error  'ContactPage' is defined but never used             no-unused-vars
+  17:34   error  'FaqPage' is defined but never used                 no-unused-vars
+  17:43   error  'TermsPrivacyPage' is defined but never used        no-unused-vars
+  18:10   error  'NotFoundPage' is defined but never used            no-unused-vars
+  19:10   error  'AccountPage' is defined but never used             no-unused-vars
+  19:23   error  'AccountAddressesPage' is defined but never used    no-unused-vars
+  19:45   error  'AccountOrderDetailPage' is defined but never used  no-unused-vars
+  19:69   error  'AccountOrdersPage' is defined but never used       no-unused-vars
+  19:88   error  'WishlistPage' is defined but never used            no-unused-vars
+  20:10   error  'AdminAnalyticsPage' is defined but never used      no-unused-vars
+  20:30   error  'AdminCategoriesPage' is defined but never used     no-unused-vars
+  20:51   error  'AdminCouponsPage' is defined but never used        no-unused-vars
+  20:69   error  'AdminDashboardPage' is defined but never used      no-unused-vars
+  20:89   error  'AdminOrderDetailPage' is defined but never used    no-unused-vars
+  20:111  error  'AdminOrdersPage' is defined but never used         no-unused-vars
+  20:128  error  'AdminProductsPage' is defined but never used       no-unused-vars
+  20:147  error  'AdminProductFormPage' is defined but never used    no-unused-vars
+  20:169  error  'AdminReviewsPage' is defined but never used        no-unused-vars
+  20:187  error  'AdminShipmentsPage' is defined but never used      no-unused-vars
+  20:207  error  'AdminUsersPage' is defined but never used          no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\components\CategoryGrid.jsx
+  1:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\components\Footer.jsx
+  1:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\components\Header.jsx
+  1:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\components\Layout.jsx
+  2:8  error  'Header' is defined but never used      no-unused-vars
+  3:8  error  'Footer' is defined but never used      no-unused-vars
+  4:8  error  'CartDrawer' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\components\routing\RouteGuard.jsx
+  1:10  error  'Navigate' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\components\shop\DashboardPlaceholder.jsx
+  1:10  error  'SectionIntro' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\components\shop\ProductCard.jsx
+   1:10  error  'Link' is defined but never used                   no-unused-vars
+  11:10  error  'HeartIcon' is defined but never used              no-unused-vars
+  23:10  error  'ViewIcon' is defined but never used               no-unused-vars
+  32:10  error  'BagIcon' is defined but never used                no-unused-vars
+  48:9   error  'handleBuyNow' is assigned a value but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\components\ui\ErrorBoundaryPage.jsx
+  1:10  error  'Link' is defined but never used  no-unused-vars
+  2:10  error  'Seo' is defined but never used   no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\components\ui\Seo.jsx
+  1:10  error  'Helmet' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\layouts\AccountLayout.jsx
+  1:10  error  'NavLink' is defined but never used  no-unused-vars
+  1:19  error  'Outlet' is defined but never used   no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\layouts\AdminLayout.jsx
+  1:10  error  'NavLink' is defined but never used  no-unused-vars
+  1:19  error  'Outlet' is defined but never used   no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\layouts\MainLayout.jsx
+   1:10  error  'Link' is defined but never used        no-unused-vars
+   1:16  error  'NavLink' is defined but never used     no-unused-vars
+   1:25  error  'Outlet' is defined but never used      no-unused-vars
+  16:10  error  'IconLink' is defined but never used    no-unused-vars
+  34:10  error  'SearchIcon' is defined but never used  no-unused-vars
+  43:10  error  'HeartIcon' is defined but never used   no-unused-vars
+  55:10  error  'BagIcon' is defined but never used     no-unused-vars
+  64:10  error  'UserIcon' is defined but never used    no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\main.jsx
+  1:8  error  'React' is defined but never used  no-unused-vars
+  3:8  error  'App' is defined but never used    no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\About.jsx
+  1:10  error  'Link' is defined but never used         no-unused-vars
+  2:10  error  'Swiper' is defined but never used       no-unused-vars
+  2:18  error  'SwiperSlide' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Admin.jsx
+  2:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\BlogList.jsx
+  1:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\BlogPost.jsx
+  1:21  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\CartPage.jsx
+  1:10  error  'Link' is defined but never used  no-unused-vars
+  2:10  error  'Seo' is defined but never used   no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Catalog.jsx
+  1:10  error  'Link' is defined but never used                  no-unused-vars
+  3:8   error  'ToySection' is defined but never used            no-unused-vars
+  4:8   error  'CategoryGrid' is defined but never used          no-unused-vars
+  6:7   error  'COLLECTIONS' is assigned a value but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\CheckoutPage.jsx
+   4:10  error  'createOrder' is defined but never used     no-unused-vars
+   5:10  error  'Seo' is defined but never used             no-unused-vars
+  13:9   error  'clear' is assigned a value but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\CollectionPage.jsx
+  1:21  error  'Link' is defined but never used        no-unused-vars
+  3:8   error  'ToySection' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Compare.jsx
+  1:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Contact.jsx
+  2:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\FAQ.jsx
+  2:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Home.jsx
+   1:10  error    'useState' is defined but never used                                                                                                                                                             no-unused-vars
+   2:10  error    'Link' is defined but never used                                                                                                                                                                 no-unused-vars
+   3:10  error    'Swiper' is defined but never used                                                                                                                                                               no-unused-vars
+   3:18  error    'SwiperSlide' is defined but never used                                                                                                                                                          no-unused-vars
+  10:8   error    'ToySection' is defined but never used                                                                                                                                                           no-unused-vars
+  11:8   error    'CategoryGrid' is defined but never used                                                                                                                                                         no-unused-vars
+  51:9   warning  The 'products' logical expression could make the dependencies of useMemo Hook (at line 53) change on every render. To fix this, wrap the initialization of 'products' in its own useMemo() Hook  react-hooks/exhaustive-deps
+  51:9   warning  The 'products' logical expression could make the dependencies of useMemo Hook (at line 54) change on every render. To fix this, wrap the initialization of 'products' in its own useMemo() Hook  react-hooks/exhaustive-deps
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\HomePage.jsx
+  2:10  error  'Link' is defined but never used              no-unused-vars
+  3:25  error  'StoreProductCard' is defined but never used  no-unused-vars
+  5:10  error  'Seo' is defined but never used               no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Login.jsx
+  2:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\NotFoundPage.jsx
+  1:10  error  'Link' is defined but never used  no-unused-vars
+  2:10  error  'Seo' is defined but never used   no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\OrderConfirmationPage.jsx
+  1:10  error  'Link' is defined but never used  no-unused-vars
+  2:10  error  'Seo' is defined but never used   no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\PaymentPage.jsx
+  2:36  error  'Link' is defined but never used  no-unused-vars
+  5:10  error  'Seo' is defined but never used   no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\ProductDetail.jsx
+   2:21  error  'Link' is defined but never used         no-unused-vars
+   3:10  error  'Swiper' is defined but never used       no-unused-vars
+   3:18  error  'SwiperSlide' is defined but never used  no-unused-vars
+  12:8   error  'ToySection' is defined but never used   no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\ProductDetailPage.jsx
+   3:10  error  'ProductCard' is defined but never used  no-unused-vars
+   4:10  error  'Seo' is defined but never used          no-unused-vars
+  17:10  error  'HeartIcon' is defined but never used    no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Register.jsx
+  2:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Search.jsx
+  2:27  error  'Link' is defined but never used        no-unused-vars
+  4:8   error  'ToySection' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\SearchPage.jsx
+  4:10  error  'ProductCard' is defined but never used  no-unused-vars
+  5:10  error  'Seo' is defined but never used          no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\ShopPage.jsx
+  3:10  error  'ProductCard' is defined but never used  no-unused-vars
+  4:10  error  'Seo' is defined but never used          no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\TrackOrderPage.jsx
+  2:10  error  'TrackingTimeline' is defined but never used  no-unused-vars
+  3:10  error  'Seo' is defined but never used               no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\UtilityPages.jsx
+  1:10  error  'Seo' is defined but never used   no-unused-vars
+  2:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\Wishlist.jsx
+  1:10  error  'Link' is defined but never used  no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\account\AccountPages.jsx
+   4:10  error  'Link' is defined but never used                  no-unused-vars
+   8:10  error  'DashboardPlaceholder' is defined but never used  no-unused-vars
+  12:7   error  'Card' is assigned a value but never used         no-unused-vars
+  18:7   error  'Input' is assigned a value but never used        no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\admin\AdminPages.jsx
+    2:10  error  'Link' is defined but never used           no-unused-vars
+   35:10  error  'Button' is defined but never used         no-unused-vars
+   36:10  error  'Seo' is defined but never used            no-unused-vars
+   42:10  error  'AdminEntry' is defined but never used     no-unused-vars
+   59:10  error  'AdminCard' is defined but never used      no-unused-vars
+   71:10  error  'Field' is defined but never used          no-unused-vars
+   80:10  error  'SelectField' is defined but never used    no-unused-vars
+   91:10  error  'TextareaField' is defined but never used  no-unused-vars
+  100:10  error  'EmptyState' is defined but never used     no-unused-vars
+
+C:\Users\ASUS\Documents\Playground\FullKuddosland\client\src\pages\auth\AuthPages.jsx
+   2:47  error  'Link' is defined but never used            no-unused-vars
+   6:10  error  'Seo' is defined but never used             no-unused-vars
+   8:7   error  'Input' is assigned a value but never used  no-unused-vars
+  15:10  error  'AuthShell' is defined but never used       no-unused-vars
+
+Γ£û 150 problems (148 errors, 2 warnings)
+
