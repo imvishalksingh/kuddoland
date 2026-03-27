@@ -25,7 +25,10 @@ api.interceptors.request.use((config) => {
 
   const method = (config.method || "get").toLowerCase();
   if (["post", "put", "patch", "delete"].includes(method)) {
-    const csrfToken = getCookieValue("kuddosland-csrf");
+    const storeCsrfToken = useAuthStore.getState().csrfToken;
+    const cookieCsrfToken = getCookieValue("kuddosland-csrf");
+    const csrfToken = storeCsrfToken || cookieCsrfToken;
+    
     if (csrfToken) {
       config.headers["x-csrf-token"] = csrfToken;
     }

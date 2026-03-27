@@ -1,7 +1,9 @@
+import { useAuthStore } from "../store/authStore";
 import api from "./axios";
 
 export async function ensureCsrfToken() {
   const { data } = await api.get("/auth/csrf");
+  useAuthStore.getState().setCsrfToken(data.csrfToken);
   return data;
 }
 
