@@ -6,37 +6,7 @@ import { useCategories } from "../hooks/useCategories";
 import { useCartStore } from "../store/cartStore";
 import { useWishlist } from "../hooks/useWishlist";
 import { Seo } from "../components/ui/Seo";
-
-const heroSlides = [
-  {
-    id: 0,
-    subheading: "SEASONAL SALE - UP TO 60% OFF",
-    heading: "Babies Soft Toys",
-    price: "Price from : Rs.554",
-    image: "/hero_img1.png",
-  },
-  {
-    id: 1,
-    subheading: "SEASONAL SALE - UP TO 40% OFF",
-    heading: "Plush Animals",
-    price: "Price from : Rs.855",
-    image: "/hero_img2.png",
-  },
-  {
-    id: 2,
-    subheading: "NEW ARRIVALS - 15% OFF",
-    heading: "Baby Blankets",
-    price: "Price from : Rs.450",
-    image: "/hero_img3.png",
-  },
-  {
-    id: 3,
-    subheading: "PREMIUM COLLECTION",
-    heading: "Nursery Decor",
-    price: "Price from : Rs.1200",
-    image: "/hero_img4.png",
-  },
-];
+import useDataStore from "../store/useDataStore";
 
 const promoCards = [
   {
@@ -68,34 +38,40 @@ const ageItems = [
 
 const newsItems = [
   {
-    author: "John Mathew",
-    date: "14 Feb 2024",
-    title: "Cherishing Your Kids Special Day With Their Ultimate Faves",
-    body: "Ac turpis egestas sed tempus urna et pharetra. Ultrices tincidunt arcu non sodales. Lacus vestibulum...",
+    author: "Kuddoland Team",
+    date: "28 Mar 2026",
+    title: "Why Pretend Play Is Essential for Toddlers",
+    body: "Pretend play is more than just fun. It helps children develop language and social skills...",
     image: "/cat2.png",
   },
   {
     author: "John Mathew",
-    date: "14 Feb 2024",
+    date: "14 Feb 2026",
     title: "What Are the Best Toys For Child Development",
-    body: "Aliquet risus feugiat in ante. Est pellentesque elit ullamcorper dignissim. Egestas integer eget aliquet nibh...",
+    body: "Aliquet risus feugiat in ante. Est pellentesque elit ullamcorper dignissim...",
     image: "/cat3.png",
   },
   {
     author: "John Mathew",
-    date: "14 Feb 2024",
+    date: "10 Feb 2026",
     title: "How Do Toys Impact a Child's Learning",
-    body: "Sollicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque. Tristique senectus et netus et malesuada...",
+    body: "Sollicitudin ac orci phasellus egestas tellus rutrum tellus pellentesque...",
     image: "/cat4.png",
   },
-];
-
-const brandItems = [
-  { label: "FrogLeaf", color: "#7bb342" },
-  { label: "DINEX", color: "#78a443" },
-  { label: "CloudFrog", color: "#27b4bf" },
-  { label: "PINO", color: "#e89c42" },
-  { label: "BABYLOGO", color: "#9aa0b9" },
+  {
+    author: "Shivani",
+    date: "05 Feb 2026",
+    title: "Choosing Safe Materials for Newborns",
+    body: "Ensuring your baby's toys are safe is our top priority. Learn what to look for...",
+    image: "/cat5.png",
+  },
+  {
+    author: "Jane Doe",
+    date: "01 Feb 2026",
+    title: "Top 10 Gifts for 1 Year Olds",
+    body: "Finding the perfect gift for a first birthday can be tricky. Here are our top picks...",
+    image: "/cat6.png",
+  },
 ];
 
 // --- Helper Components ---
@@ -135,12 +111,18 @@ function heroTextClass(position) {
 // --- Main HomePage Component ---
 
 export function HomePage() {
+  const { storefront } = useDataStore();
   const { data: products = [] } = useProducts({ featured: true });
   const { data: categories = [] } = useCategories();
   const [countdown, setCountdown] = useState({ days: 2, hours: 3, minutes: 48, seconds: 15 });
   const [currentSlide, setCurrentSlide] = useState(0);
   const [startX, setStartX] = useState(null);
   const [activeArrivalsFilter, setActiveArrivalsFilter] = useState("All");
+
+  const heroSlides = storefront?.heroSliders || [];
+  const homeSections = storefront?.homeSections || {};
+  const brandItems = storefront?.brands || [];
+  const availableOn = storefront?.availableOn || [];
 
   const prevSlideIndex = (currentSlide - 1 + heroSlides.length) % heroSlides.length;
   const nextSlideIndex = (currentSlide + 1) % heroSlides.length;
@@ -188,12 +170,13 @@ export function HomePage() {
   }, []);
 
   useEffect(() => {
+    if (!heroSlides || heroSlides.length === 0) return;
     const slider = window.setInterval(() => {
       setCurrentSlide((previous) => (previous + 1) % heroSlides.length);
     }, 3500);
 
     return () => window.clearInterval(slider);
-  }, []);
+  }, [heroSlides.length]);
 
   const topPicks = useMemo(() => products.slice(0, 6), [products]);
   const arrivals = useMemo(() => products.slice(0, 6), [products]);
@@ -239,13 +222,13 @@ export function HomePage() {
           <div className="grid min-h-[inherit] items-center gap-8 lg:grid-cols-[0.42fr_0.58fr]">
             <div className="order-2 px-2 text-center lg:order-1 lg:px-0 lg:pl-20 lg:text-left">
               <div className="relative mx-auto h-[250px] max-w-[540px] sm:h-[280px] lg:mx-0 lg:h-[310px]">
-                {heroSlides.map((slide) => {
+                {heroSlides.map((slide, index) => {
                   let position = "next";
-                  if (slide.id === currentSlide) position = "active";
-                  else if (slide.id === prevSlide) position = "prev";
+                  if (index === currentSlide) position = "active";
+                  else if (index === prevSlide) position = "prev";
 
                   return (
-                    <div key={slide.id} className={heroTextClass(position)}>
+                    <div key={index} className={heroTextClass(position)}>
                       <p className="text-[12px] uppercase tracking-[0.18em] text-slate-900 sm:text-[15px] lg:text-[20px]">
                         {slide.subheading}
                       </p>
@@ -257,10 +240,10 @@ export function HomePage() {
                       </p>
                       <div>
                         <Link
-                          to="/shop"
+                          to={slide.ctaUrl || "/shop"}
                           className="mt-8 inline-flex rounded-[16px] bg-[#ff7f83] px-8 py-4 text-[16px] font-medium text-white sm:mt-9 sm:px-10 sm:py-5 sm:text-[18px] lg:mt-11 lg:rounded-[18px] lg:px-11 lg:py-6 lg:text-[19px]"
                         >
-                          Shop now
+                          {slide.ctaText || "Shop now"}
                         </Link>
                       </div>
                     </div>
@@ -270,16 +253,16 @@ export function HomePage() {
             </div>
             <div className="order-1 flex items-center justify-center pt-4 lg:order-2 lg:justify-end lg:pt-0">
               <div className="relative h-[260px] w-full max-w-[340px] sm:h-[380px] sm:max-w-[520px] lg:h-[560px] lg:max-w-[760px]">
-                {heroSlides.map((slide) => {
+                {heroSlides.map((slide, index) => {
                   let position = "hidden-right";
-                  if (slide.id === currentSlide) position = "center";
-                  else if (slide.id === prevSlide) position = "left";
-                  else if (slide.id === nextSlide) position = "right";
+                  if (index === currentSlide) position = "center";
+                  else if (index === prevSlide) position = "left";
+                  else if (index === nextSlide) position = "right";
                   else position = "hidden-left";
 
                   return (
                     <img
-                      key={slide.id}
+                      key={index}
                       className={heroImageClass(position)}
                       src={slide.image}
                       alt={slide.heading}
@@ -335,16 +318,19 @@ export function HomePage() {
       <section className="page-shell pt-10 sm:pt-14 lg:pt-20">
         <h2 className="text-center font-body text-[38px] font-medium leading-none text-black sm:text-[48px] lg:text-[62px]">Shop By Category</h2>
         <div className="mt-10 flex gap-6 overflow-x-auto pb-4 sm:mt-12 sm:gap-8 lg:grid lg:grid-cols-5 lg:overflow-visible lg:pb-0">
-          {categories.slice(0, 5).map((item, i) => (
-            <Link key={item.id} to={`/shop?category=${item.slug}`} className="min-w-[170px] text-center sm:min-w-[190px] lg:min-w-0">
-              <div className="mx-auto flex h-[148px] w-[148px] items-center justify-center rounded-full border border-dashed border-slate-400 bg-white p-[8px] sm:h-[170px] sm:w-[170px] lg:h-[182px] lg:w-[182px] lg:p-[10px]">
-                <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full" style={{ backgroundColor: CAT_BG[i % CAT_BG.length] }}>
-                  <img className="h-full w-full object-cover" src={item.image || `/cat${(i % 6) + 1}.png`} alt={item.name} />
+          {categories.slice(0, 5).map((item, i) => {
+            const displayName = item.name.toLowerCase() === "stem kit" ? "Star Baby" : item.name;
+            return (
+              <Link key={item.id} to={`/shop?category=${item.slug}`} className="min-w-[170px] text-center sm:min-w-[190px] lg:min-w-0">
+                <div className="mx-auto flex h-[148px] w-[148px] items-center justify-center rounded-full border border-dashed border-slate-400 bg-white p-[8px] sm:h-[170px] sm:w-[170px] lg:h-[182px] lg:w-[182px] lg:p-[10px]">
+                  <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full" style={{ backgroundColor: CAT_BG[i % CAT_BG.length] }}>
+                    <img className="h-full w-full object-cover" src={item.image || `/cat${(i % 6) + 1}.png`} alt={displayName} />
+                  </div>
                 </div>
-              </div>
-              <p className="mt-5 font-body text-[22px] font-medium text-black sm:text-[24px] lg:mt-7 lg:text-[28px]">{item.name}</p>
-            </Link>
-          ))}
+                <p className="mt-5 font-body text-[22px] font-medium text-black sm:text-[24px] lg:mt-7 lg:text-[28px]">{displayName}</p>
+              </Link>
+            )
+          })}
         </div>
       </section>
 
@@ -392,7 +378,7 @@ export function HomePage() {
         <div className="grid gap-10 lg:grid-cols-[1.02fr_1.08fr]">
           <article className="overflow-hidden rounded-[24px] bg-[#eef5fb] lg:rounded-[34px]">
             <div className="px-5 pt-8 text-center sm:px-8 lg:px-12 lg:pt-10">
-              <h2 className="font-body text-[44px] font-medium text-black sm:text-[58px] lg:text-[78px]">Special Offer</h2>
+              <h2 className="font-body text-[44px] font-medium text-black sm:text-[52px] lg:text-[68px] leading-[1.1]">{homeSections.specialOfferHeading || "Special Offer"}</h2>
               <p className="mx-auto mt-3 max-w-[560px] text-[16px] text-black sm:text-[18px] lg:mt-4 lg:text-[20px]">Praesent tristique magna sit amet purus gravida quis blandit.</p>
               <Link to="/shop" className="mt-6 inline-flex rounded-[16px] bg-[#ff7f83] px-8 py-4 text-[16px] font-medium text-white sm:px-10 sm:py-4 sm:text-[17px] lg:mt-8 lg:rounded-[18px] lg:px-11 lg:py-5 lg:text-[18px]">
                 Shop Now
@@ -411,7 +397,7 @@ export function HomePage() {
           </article>
 
           <div>
-            <h2 className="font-body text-[40px] font-medium leading-none text-black sm:text-[52px] lg:text-[68px]">Top Picks For Youngsters</h2>
+            <h2 className="font-body text-[40px] font-medium leading-[1.1] text-black sm:text-[48px] lg:text-[60px]">{homeSections.topPicksHeading || "Top Picks For Youngsters"}</h2>
             <p className="mt-4 text-[16px] text-slate-500 sm:text-[18px] lg:mt-6 lg:text-[20px]">Justo Eget Magna Fermentum Iaculis.</p>
             <div className="mt-8 grid gap-x-6 gap-y-10 sm:mt-10 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-14">
               {topPicks.map((product) => (
@@ -428,7 +414,7 @@ export function HomePage() {
         <div className="mb-8">
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mb-2">Toy Collection</p>
           <div className="flex items-end justify-between gap-4">
-            <h2 className="font-body text-[32px] font-extrabold leading-tight text-brand-ink sm:text-[42px] lg:text-[48px]">New Arrivals</h2>
+            <h2 className="font-body text-[32px] font-extrabold leading-tight text-brand-ink sm:text-[42px] lg:text-[48px]">{homeSections.newArrivalsHeading || "New Arrivals"}</h2>
             <Link to="/shop" className="text-[12px] font-bold text-slate-500 border-b-2 border-slate-100 pb-0.5 hover:text-brand-ink hover:border-brand-ink transition-all">
               View all &rarr;
             </Link>
@@ -437,7 +423,7 @@ export function HomePage() {
         </div>
 
         <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2 hide-scrollbar">
-          {["All", "Under ₹600", "Top Rated", "On Sale"].map(f => (
+          {["All", "Under ₹99", "Under ₹299", "Under ₹499", "Top Rated", "On Sale"].map(f => (
             <button key={f} onClick={() => setActiveArrivalsFilter(f)} className={`whitespace-nowrap px-5 py-2 rounded-full border-2 text-[12px] font-bold tracking-wide transition-all ${activeArrivalsFilter === f ? "bg-brand-ink border-brand-ink text-white" : "bg-white border-slate-100 text-slate-500 hover:border-slate-300"}`}>
               {f}
             </button>
@@ -476,14 +462,80 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="page-shell py-6">
-        <h2 className="text-center font-body text-[38px] font-medium leading-none text-black sm:text-[48px] lg:text-[62px]">Top Brands</h2>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-5 lg:gap-8">
+      <section className="page-shell pt-10 pb-6">
+        <h2 className="text-center font-body text-[32px] font-medium leading-none text-black sm:text-[40px]">{homeSections.topBrandsHeading || "Top Brands With Us"}</h2>
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-5 lg:mt-8">
           {brandItems.map((brand) => (
-            <div key={brand.label} className="flex h-[120px] items-center justify-center rounded-[20px] border border-dashed border-slate-300 bg-white sm:h-[145px] lg:h-[170px] lg:rounded-[24px]">
-              <span className="font-body text-[28px] font-medium sm:text-[30px] lg:text-[34px]" style={{ color: brand.color }}>{brand.label}</span>
+            <div key={brand.label} className="flex h-[80px] items-center justify-center rounded-2xl border border-slate-200 bg-white sm:h-[100px] lg:h-[120px]">
+              <span className="font-body text-[20px] font-medium sm:text-[24px]" style={{ color: brand.color || "#000" }}>{brand.label}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Available On */}
+      {availableOn.length > 0 && (
+        <section className="bg-slate-50 py-8">
+          <div className="page-shell">
+            <h2 className="text-center font-body text-[28px] font-medium text-black">We are Available On</h2>
+            <div className="mt-6 flex flex-wrap justify-center gap-6 sm:gap-10 opacity-60 grayscale hover:grayscale-0 transition-all duration-300">
+              {availableOn.map((item) => (
+                <div key={item.name} className="flex h-[40px] w-[100px] items-center justify-center sm:h-[50px] sm:w-[120px]">
+                  <img src={item.logo} alt={item.name} className="max-h-full max-w-full object-contain" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Contact For Bulk Orders */}
+      <section className="page-shell py-12 lg:py-16">
+        <div className="mx-auto max-w-3xl rounded-3xl bg-white p-8 sm:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+          <div className="text-center mb-8">
+            <h2 className="font-body text-[32px] sm:text-[40px] font-bold text-brand-ink">Contact Us For Bulk Orders</h2>
+            <p className="text-slate-500 mt-2 text-[15px]">Looking to purchase toys for a school, daycare, or retail outlet? Fill out the form below and our wholesale team will get back to you.</p>
+          </div>
+          <form className="grid gap-5 sm:grid-cols-2" onSubmit={e => { e.preventDefault(); alert("Bulk inquiry submitted. We will contact you soon!"); }}>
+            <input type="text" placeholder="First Name" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-[14px] outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
+            <input type="text" placeholder="Last Name" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-[14px] outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
+            <input type="email" placeholder="Email Address" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-[14px] outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
+            <input type="tel" placeholder="Phone Number" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-[14px] outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
+            <div className="sm:col-span-2">
+              <textarea placeholder="Tell us about your requirements (items, estimated quantity, timeline)" rows="4" className="w-full rounded-xl border border-slate-200 px-5 py-4 text-[14px] outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required></textarea>
+            </div>
+            <div className="sm:col-span-2 mt-2">
+              <button type="submit" className="w-full rounded-xl bg-brand-ink py-4 font-bold text-white transition-colors hover:bg-black text-[15px]">Submit Inquiry</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      {/* Premium Mobile App CTA */}
+      <section className="page-shell my-8">
+        <div className="mx-auto max-w-5xl rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-black p-8 sm:p-10 lg:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden relative">
+          <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-brand-coral/20 blur-3xl mix-blend-screen"></div>
+          
+          <div className="relative z-10 max-w-md text-center md:text-left">
+            <span className="inline-block px-3 py-1 mb-4 text-[11px] font-bold tracking-widest text-white uppercase bg-white/10 rounded-full border border-white/20">Coming Soon</span>
+            <h2 className="font-display text-[28px] leading-tight font-medium text-white sm:text-[34px]">
+              The entirely new Kuddoland mobile experience.
+            </h2>
+            <p className="mt-4 text-[14px] text-slate-300 leading-relaxed">
+              Premium shopping, exclusive app drops, and lightning-fast checkout. Arriving on iOS and Android this fall.
+            </p>
+          </div>
+          
+          <div className="relative z-10 flex flex-col sm:flex-row gap-3">
+            <button className="flex items-center justify-center gap-3 rounded-lg bg-white/10 px-6 py-3 font-semibold text-white backdrop-blur-md border border-white/20 transition hover:bg-white/20 opacity-70 cursor-not-allowed">
+              <svg className="h-5 w-5" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+              <span>App Store</span>
+            </button>
+            <button className="flex items-center justify-center gap-3 rounded-lg bg-white/10 px-6 py-3 font-semibold text-white backdrop-blur-md border border-white/20 transition hover:bg-white/20 opacity-70 cursor-not-allowed">
+              <svg className="h-5 w-5" viewBox="0 0 512 512" fill="currentColor"><path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/></svg>
+              <span>Google Play</span>
+            </button>
+          </div>
         </div>
       </section>
     </main>

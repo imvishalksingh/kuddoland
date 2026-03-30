@@ -17,7 +17,7 @@ import { TrackOrderPage } from "../pages/TrackOrderPage";
 import { AboutPage, ContactPage, FaqPage, TermsPrivacyPage } from "../pages/UtilityPages";
 import { NotFoundPage } from "../pages/NotFoundPage";
 import { AccountPage, AccountAddressesPage, AccountOrderDetailPage, AccountOrdersPage, WishlistPage } from "../pages/account/AccountPages";
-import { AdminAnalyticsPage, AdminCategoriesPage, AdminCouponsPage, AdminDashboardPage, AdminOrderDetailPage, AdminOrdersPage, AdminProductsPage, AdminProductFormPage, AdminReviewsPage, AdminShipmentsPage, AdminUsersPage } from "../pages/admin/AdminPages";
+import { AdminAnalyticsPage, AdminCategoriesPage, AdminCouponsPage, AdminDashboardPage, AdminOrderDetailPage, AdminOrdersPage, AdminProductsPage, AdminProductFormPage, AdminReviewsPage, AdminShipmentsPage, AdminUsersPage, AdminStorefrontSettingsPage } from "../pages/admin/AdminPages";
 
 export const router = createBrowserRouter([
   {
@@ -43,21 +43,21 @@ export const router = createBrowserRouter([
       { path: "contact", element: <ContactPage /> },
       { path: "faq", element: <FaqPage /> },
       { path: "terms", element: <TermsPrivacyPage /> },
-    ],
-  },
-  {
-    path: "/account",
-    element: (
-      <RouteGuard>
-        <AccountLayout />
-      </RouteGuard>
-    ),
-    children: [
-      { index: true, element: <AccountPage /> },
-      { path: "orders", element: <AccountOrdersPage /> },
-      { path: "orders/:id", element: <AccountOrderDetailPage /> },
-      { path: "addresses", element: <AccountAddressesPage /> },
-      { path: "wishlist", element: <WishlistPage /> },
+      {
+        path: "account",
+        element: (
+          <RouteGuard>
+            <AccountLayout />
+          </RouteGuard>
+        ),
+        children: [
+          { index: true, element: <AccountPage /> },
+          { path: "orders", element: <AccountOrdersPage /> },
+          { path: "orders/:id", element: <AccountOrderDetailPage /> },
+          { path: "addresses", element: <AccountAddressesPage /> },
+          { path: "wishlist", element: <WishlistPage /> },
+        ],
+      },
     ],
   },
   {
@@ -79,6 +79,7 @@ export const router = createBrowserRouter([
       { path: "shipments", element: <AdminShipmentsPage /> },
       { path: "categories", element: <AdminCategoriesPage /> },
       { path: "reviews", element: <AdminReviewsPage /> },
+      { path: "settings", element: <AdminStorefrontSettingsPage /> },
       { path: "analytics", element: <AdminAnalyticsPage /> },
     ],
   },

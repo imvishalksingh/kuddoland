@@ -14,6 +14,7 @@ export default {
       },
       boxShadow: {
         card: "0 20px 45px rgba(20, 33, 61, 0.10)",
+        premium: "0 10px 50px -10px rgba(20, 33, 61, 0.06), 0 20px 25px -5px rgba(20, 33, 61, 0.02)",
       },
       fontFamily: {
         display: ['"Baloo 2"', "cursive"],

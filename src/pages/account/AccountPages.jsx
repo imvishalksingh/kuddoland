@@ -11,15 +11,15 @@ import { useCartStore } from "../../store/cartStore";
 import { ProductCard } from "../../components/shop/ProductCard";
 
 const Card = ({ children, className = "" }) => (
-  <div className={`rounded-[32px] border border-brand-peach bg-white p-6 shadow-sm ${className}`}>
+  <div className={`rounded-[28px] border border-brand-peach/40 bg-white/80 p-8 shadow-premium backdrop-blur-sm ${className}`}>
     {children}
   </div>
 );
 
 const Input = (props) => (
-  <input 
-    {...props} 
-    className="w-full rounded-2xl border-2 border-slate-100 bg-slate-50 px-5 py-3 font-body text-slate-700 transition-colors focus:border-brand-coral focus:bg-white focus:outline-none placeholder:text-slate-400" 
+  <input
+    {...props}
+    className="w-full rounded-2xl border border-slate-100 bg-white px-5 py-3.5 font-body text-slate-700 transition-all focus:border-brand-coral focus:ring-4 focus:ring-brand-coral/5 focus:outline-none placeholder:text-slate-300"
   />
 );
 
@@ -37,8 +37,11 @@ export function AccountPage() {
 
   return (
     <section className="space-y-6">
-      <h1 className="font-display text-4xl font-extrabold text-brand-ink mb-2">My Profile</h1>
-      
+      <div className="mb-2">
+        <h1 className="font-display text-4xl font-extrabold text-brand-ink">Profile Settings</h1>
+        <p className="text-slate-500 font-body text-sm mt-1">Update your personal information and contact details.</p>
+      </div>
+
       {!data?.user?.isVerified && (
         <Card className="border-amber-200 bg-amber-50">
           <div className="flex items-start gap-4">
@@ -88,12 +91,12 @@ export function AccountPage() {
             </div>
           </div>
         </div>
-        
+
         <div className="pt-4 flex items-center justify-between border-t border-slate-100">
           <button className="rounded-full bg-brand-coral px-8 py-3 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => updateProfile(form)}>
             Save Changes
           </button>
-          
+
           <button
             className="rounded-full border-2 border-red-100 bg-red-50 px-6 py-3 text-sm font-bold text-red-500 transition-colors hover:bg-red-100"
             onClick={async () => {
@@ -136,8 +139,11 @@ export function AccountOrdersPage() {
 
   return (
     <section className="space-y-6">
-      <h1 className="font-display text-4xl font-extrabold text-brand-ink mb-2">Order History</h1>
-      <div className="space-y-4">
+      <div className="mb-2">
+        <h1 className="font-display text-4xl font-extrabold text-brand-ink">Order History</h1>
+        <p className="text-slate-500 font-body text-sm mt-1">Track and manage your recent purchases.</p>
+      </div>
+      <div className="space-y-5">
         {items.map((order) => (
           <Card key={order.id} className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between hover:border-brand-coral transition-colors">
             <div>
@@ -200,9 +206,14 @@ export function AccountOrderDetailPage() {
 
   return (
     <section className="space-y-6">
-      <div className="flex items-center justify-between mb-2">
-        <h1 className="font-display text-4xl font-extrabold text-brand-ink">Order Details</h1>
-        <Link to="/account/orders" className="text-brand-coral font-bold hover:underline hidden sm:block">Back to orders</Link>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="font-display text-4xl font-extrabold text-brand-ink">Order Details</h1>
+          <Link to="/account/orders" className="text-brand-coral text-sm font-bold hover:underline lg:hidden mt-2 inline-block">← Back to orders</Link>
+        </div>
+        <Link to="/account/orders" className="rounded-full bg-brand-peach px-6 py-2.5 text-sm font-bold text-brand-coral transition-all hover:bg-brand-coral hover:text-white hidden lg:flex items-center gap-2">
+          <span>←</span> Back to orders
+        </Link>
       </div>
 
       <Card className="space-y-6 relative overflow-hidden">
@@ -271,9 +282,9 @@ export function AccountOrderDetailPage() {
             <Input placeholder="Reason for return (e.g., Damaged item, Wrong size)" value={reason} onChange={(event) => setReason(event.target.value)} />
             <textarea className="min-h-24 w-full rounded-2xl border-2 border-slate-100 bg-white px-5 py-3 font-body text-slate-700 focus:border-brand-coral focus:outline-none placeholder:text-slate-400 resize-none" placeholder="Provide additional details..." value={details} onChange={(event) => setDetails(event.target.value)} />
             <div className="pt-2">
-              <button 
+              <button
                 className="rounded-full bg-slate-800 px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-1 hover:bg-black disabled:opacity-50 disabled:hover:translate-y-0"
-                onClick={() => mutation.mutate({ reason, details })} 
+                onClick={() => mutation.mutate({ reason, details })}
                 disabled={!reason.trim()}
               >
                 Submit Return Request
@@ -292,9 +303,12 @@ export function AccountAddressesPage() {
 
   return (
     <section className="space-y-6">
-      <div className="flex items-center justify-between mb-2">
-        <h1 className="font-display text-4xl font-extrabold text-brand-ink">Saved Addresses</h1>
-        <button className="rounded-full bg-brand-coral px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">+ Add New</button>
+      <div className="flex items-center justify-between gap-4 mb-2">
+        <div>
+          <h1 className="font-display text-4xl font-extrabold text-brand-ink">Saved Addresses</h1>
+          <p className="text-slate-500 font-body text-sm mt-1">Manage your delivery locations.</p>
+        </div>
+        <button className="rounded-full bg-brand-ink px-6 py-3 text-sm font-bold text-white shadow-lg transition-all hover:bg-black hover:-translate-y-0.5">+ Add New</button>
       </div>
 
       {items.length === 0 ? (
@@ -336,8 +350,11 @@ export function WishlistPage() {
 
   return (
     <section className="space-y-6">
-      <h1 className="font-display text-4xl font-extrabold text-brand-ink mb-2">My Wishlist</h1>
-      
+      <div className="mb-2">
+        <h1 className="font-display text-4xl font-extrabold text-brand-ink">My Wishlist</h1>
+        <p className="text-slate-500 font-body text-sm mt-1">Your saved toys and future playmates.</p>
+      </div>
+
       {!items.length ? (
         <Card className="text-center py-16 border-dashed border-2 bg-orange-50/50">
           <div className="text-6xl mb-4 opacity-50">✨</div>

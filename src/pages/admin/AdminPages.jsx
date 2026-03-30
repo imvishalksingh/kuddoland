@@ -28,7 +28,10 @@ import {
   updateAdminProduct,
   updateCategory,
   updateCoupon,
+  updateStorefront,
+  uploadBulkProducts
 } from "../../api/admin.api";
+import useDataStore from "../../store/useDataStore";
 import { assignShipment, decideReturn, getAdminOrders, getOrder, refundOrder, updateOrderStatus } from "../../api/orders.api";
 import { fetchProduct } from "../../api/products.api";
 import { uploadAdminImage } from "../../api/upload.api";
@@ -170,6 +173,7 @@ export function AdminDashboardPage() {
 
 export function AdminProductsPage() {
   const queryClient = useQueryClient();
+  const [isUploading, setIsUploading] = useState(false);
   const { data } = useQuery({ queryKey: ["admin-products"], queryFn: getAdminProducts });
   const archiveMutation = useMutation({
     mutationFn: deleteAdminProduct,
@@ -179,13 +183,42 @@ export function AdminProductsPage() {
     },
     onError: (error) => toast.error(error.response?.data?.message || "Archive failed"),
   });
+  
+  const handleBulkUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setIsUploading(true);
+    const loadingToast = toast.loading("Uploading products via CSV...");
+    try {
+      const result = await uploadBulkProducts(file);
+      toast.success(result.message || `Successfully inserted products!`, { id: loadingToast });
+      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to upload CSV. Please check format.", { id: loadingToast });
+    } finally {
+      setIsUploading(false);
+      e.target.value = null;
+    }
+  };
+
   const items = data?.items || [];
 
   return (
     <AdminEntry
       title="Catalog management"
       description="Create, edit, feature, and archive products from the live catalog."
-      actions={<Link to="/admin/products/new"><Button>Add product</Button></Link>}
+      actions={
+        <div className="flex items-center gap-3">
+          <label className={`cursor-pointer ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+            <input type="file" accept=".csv" className="hidden" onChange={handleBulkUpload} disabled={isUploading} />
+            <span className="inline-flex h-12 px-6 items-center justify-center rounded-xl bg-orange-100 text-[15px] font-bold text-orange-700 transition-colors hover:bg-orange-200">
+              Bulk Upload CSV
+            </span>
+          </label>
+          <Link to="/admin/products/new"><Button>Add product</Button></Link>
+        </div>
+      }
     >
       {!items.length ? <EmptyState title="No products yet" description="Create the first product to populate the catalog." /> : null}
       <div className="grid gap-4">
@@ -870,6 +903,178 @@ export function AdminAnalyticsPage() {
             ))}
           </div>
         </AdminCard>
+      </div>
+    </AdminEntry>
+  );
+}
+
+export function AdminStorefrontSettingsPage() {
+  const { storefront, fetchStorefront } = useDataStore();
+  const [form, setForm] = useState(null);
+
+  useEffect(() => {
+    fetchStorefront();
+  }, [fetchStorefront]);
+
+  useEffect(() => {
+    if (storefront) {
+      setForm(JSON.parse(JSON.stringify(storefront)));
+    }
+  }, [storefront]);
+
+  const saveMutation = useMutation({
+    mutationFn: updateStorefront,
+    onSuccess: () => {
+      fetchStorefront(); // refresh global state
+      toast.success("Storefront settings updated");
+    },
+    onError: (error) => toast.error(error.response?.data?.message || "Failed to update settings"),
+  });
+
+  if (!form) return <AdminEntry title="Loading settings..." description="Fetching storefront configuration" />;
+
+  return (
+    <AdminEntry
+      title="Storefront Settings"
+      description="Manage top bar messages, social links, headers, hero sliders, homepage sections, and footer directly."
+      actions={<Button onClick={() => saveMutation.mutate(form)}>Save All Settings</Button>}
+    >
+      <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <div className="space-y-6">
+          <AdminCard title="General & Social Links">
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Support Email" value={form.supportEmail || ""} onChange={e => setForm({ ...form, supportEmail: e.target.value })} />
+              <Field label="WhatsApp Number" value={form.whatsappNumber || ""} onChange={e => setForm({ ...form, whatsappNumber: e.target.value })} />
+              <Field label="Facebook" value={form.socialLinks?.facebook || ""} onChange={e => setForm({ ...form, socialLinks: { ...form.socialLinks, facebook: e.target.value } })} />
+              <Field label="Instagram" value={form.socialLinks?.instagram || ""} onChange={e => setForm({ ...form, socialLinks: { ...form.socialLinks, instagram: e.target.value } })} />
+              <Field label="YouTube" value={form.socialLinks?.youtube || ""} onChange={e => setForm({ ...form, socialLinks: { ...form.socialLinks, youtube: e.target.value } })} />
+              <Field label="Twitter" value={form.socialLinks?.twitter || ""} onChange={e => setForm({ ...form, socialLinks: { ...form.socialLinks, twitter: e.target.value } })} />
+              <Field label="Pinterest" value={form.socialLinks?.pinterest || ""} onChange={e => setForm({ ...form, socialLinks: { ...form.socialLinks, pinterest: e.target.value } })} />
+            </div>
+          </AdminCard>
+
+          <AdminCard title="Top Bar Messages">
+            {form.topBarMessages?.map((msg, i) => (
+              <div key={i} className="flex gap-2 items-end mb-2">
+                <div className="flex-1">
+                  <Field label={`Message ${i + 1}`} value={msg} onChange={e => {
+                    const next = [...form.topBarMessages];
+                    next[i] = e.target.value;
+                    setForm({ ...form, topBarMessages: next });
+                  }} />
+                </div>
+              </div>
+            ))}
+          </AdminCard>
+
+          <AdminCard title="Hero Sliders">
+            {form.heroSliders?.map((slider, index) => (
+              <div key={index} className="space-y-4 border-b border-orange-100 pb-4 mb-4">
+                <h4 className="font-semibold text-brand-ink">Slider {index + 1}</h4>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Field label="Heading" value={slider.heading} onChange={e => {
+                    const next = [...form.heroSliders];
+                    next[index].heading = e.target.value;
+                    setForm({ ...form, heroSliders: next });
+                  }} />
+                  <Field label="Subheading" value={slider.subheading} onChange={e => {
+                    const next = [...form.heroSliders];
+                    next[index].subheading = e.target.value;
+                    setForm({ ...form, heroSliders: next });
+                  }} />
+                  <Field label="Price / Code Text" value={slider.price} onChange={e => {
+                    const next = [...form.heroSliders];
+                    next[index].price = e.target.value;
+                    setForm({ ...form, heroSliders: next });
+                  }} />
+                  <Field label="CTA Text" value={slider.ctaText} onChange={e => {
+                    const next = [...form.heroSliders];
+                    next[index].ctaText = e.target.value;
+                    setForm({ ...form, heroSliders: next });
+                  }} />
+                  <Field label="CTA URL" value={slider.ctaUrl} onChange={e => {
+                    const next = [...form.heroSliders];
+                    next[index].ctaUrl = e.target.value;
+                    setForm({ ...form, heroSliders: next });
+                  }} />
+                  <div className="flex flex-col gap-1">
+                    <label className="text-sm font-semibold text-slate-700">Slider Image</label>
+                    <div className="flex items-center gap-4">
+                      {slider.image ? (
+                        <div className="h-16 w-24 shrink-0 rounded-md border border-slate-200 overflow-hidden bg-slate-50 relative">
+                          <img src={slider.image} alt="Slider" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const next = [...form.heroSliders];
+                              next[index].image = "";
+                              setForm({ ...form, heroSliders: next });
+                            }}
+                            className="absolute top-0 right-0 bg-red-500 text-white rounded-bl p-0.5"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="h-16 w-24 shrink-0 rounded-md border border-slate-200 bg-slate-50 flex items-center justify-center text-xs text-slate-400">No Image</div>
+                      )}
+                      <div className="flex-1">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-peach file:text-brand-coral hover:file:bg-orange-100 cursor-pointer"
+                          onChange={async (e) => {
+                            const file = e.target.files[0];
+                            if (!file) return;
+                            try {
+                              const toastId = toast.loading("Uploading image...");
+                              const res = await uploadAdminImage(file, "storefront");
+                              const next = [...form.heroSliders];
+                              next[index].image = res.url || res.data?.url || res; // depending on response shape
+                              if (typeof res === "string") next[index].image = res; // If backend returns raw string url
+                              setForm({ ...form, heroSliders: next });
+                              toast.dismiss(toastId);
+                              toast.success("Image uploaded!");
+                            } catch (err) {
+                              toast.dismiss();
+                              toast.error("Upload failed");
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </AdminCard>
+        </div>
+
+        <div className="space-y-6">
+          <AdminCard title="Homepage Section Headings">
+            <div className="grid gap-4">
+              <Field label="Special Offer Heading" value={form.homeSections?.specialOfferHeading || ""} onChange={e => setForm({ ...form, homeSections: { ...form.homeSections, specialOfferHeading: e.target.value } })} />
+              <Field label="Top Picks Heading" value={form.homeSections?.topPicksHeading || ""} onChange={e => setForm({ ...form, homeSections: { ...form.homeSections, topPicksHeading: e.target.value } })} />
+              <Field label="New Arrivals Heading" value={form.homeSections?.newArrivalsHeading || ""} onChange={e => setForm({ ...form, homeSections: { ...form.homeSections, newArrivalsHeading: e.target.value } })} />
+              <Field label="Top Brands Heading" value={form.homeSections?.topBrandsHeading || ""} onChange={e => setForm({ ...form, homeSections: { ...form.homeSections, topBrandsHeading: e.target.value } })} />
+            </div>
+          </AdminCard>
+          
+          <AdminCard title="Footer Columns (JSON raw edit)">
+            <TextareaField 
+              label="Edit footer data array" 
+              value={JSON.stringify(form.footerColumns, null, 2)} 
+              onChange={e => {
+                try {
+                  const val = JSON.parse(e.target.value);
+                  setForm({ ...form, footerColumns: val });
+                } catch(err) {
+                  // ignore parse error while typing
+                }
+              }} 
+            />
+          </AdminCard>
+        </div>
       </div>
     </AdminEntry>
   );

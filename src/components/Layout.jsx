@@ -5,14 +5,6 @@ import CartDrawer from './CartDrawer';
 import useDataStore from '../store/useDataStore';
 import ScrollToTop from '../components/utils/ScrollToTop';
 
-const MARQUEE_ITEMS = [
-  "🎁 40% OFF Store Wide — Use Code: KIDDO",
-  "✨ Free Shipping on orders above ₹999",
-  "🚀 New Arrivals added every week!",
-  "🌟 Curated toys made for joy & learning",
-  "🎉 Exclusive gifting collections now live",
-];
-
 export default function Layout({ children }) {
   const { storefront, loading, error, fetchStorefront } = useDataStore();
 
@@ -48,6 +40,15 @@ export default function Layout({ children }) {
     );
   }
 
+  const email = storefront?.supportEmail || "support@kuddoland.com";
+  const phone = storefront?.whatsappNumber || "+91-96905-60532";
+  const messages = storefront?.topBarMessages || [
+    "🎁 40% OFF Store Wide — Use Code: KUDDO40",
+    "✨ First Order Discount — Use Code: KUDDOFIRST",
+    "🚀 New Arrivals added every week!",
+  ];
+  const socials = storefront?.socialLinks || {};
+
   return (
     <>
       <ScrollToTop />
@@ -55,15 +56,18 @@ export default function Layout({ children }) {
       <div className="top-bar">
         <div className="top-bar-inner">
           <div className="tb-left">
-            <span>✉ info@kuddoland.com</span>
-            <span>📞 +91-98765-43210</span>
+            <span>✉ {email}</span>
+            <span>📞 {phone}</span>
           </div>
-          <div className="tb-center">40% OFF Store Wide — Use Code: <strong>KIDDO</strong></div>
+          <div className="tb-center">
+            {messages[0]}
+          </div>
           <div className="tb-right">
-            <a href="#" aria-label="Twitter">𝕏</a>
-            <a href="#" aria-label="Facebook">f</a>
-            <a href="#" aria-label="Pinterest">𝑃</a>
-            <a href="#" aria-label="Instagram">📷</a>
+            {socials.twitter && <a href={socials.twitter} target="_blank" rel="noreferrer" aria-label="Twitter">𝕏</a>}
+            {socials.facebook && <a href={socials.facebook} target="_blank" rel="noreferrer" aria-label="Facebook">f</a>}
+            {socials.pinterest && <a href={socials.pinterest} target="_blank" rel="noreferrer" aria-label="Pinterest">𝑃</a>}
+            {socials.instagram && <a href={socials.instagram} target="_blank" rel="noreferrer" aria-label="Instagram">📷</a>}
+            {socials.youtube && <a href={socials.youtube} target="_blank" rel="noreferrer" aria-label="YouTube">▶</a>}
           </div>
         </div>
       </div>
@@ -71,7 +75,7 @@ export default function Layout({ children }) {
       {/* ── Marquee Ticker ── */}
       <div className="marquee-bar" aria-hidden="true">
         <div className="marquee-track">
-          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((text, i) => (
+          {[...messages, ...messages, ...messages, ...messages, ...messages].map((text, i) => (
             <span key={i}>{text}</span>
           ))}
         </div>

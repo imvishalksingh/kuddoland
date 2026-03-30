@@ -129,3 +129,18 @@ export async function deleteReview(id) {
   const { data } = await api.delete(`/reviews/${id}`);
   return data;
 }
+
+export const uploadBulkProducts = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const { data } = await api.post("/products/admin/bulk", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+};
+
+export async function updateStorefront(payload) {
+  const { data } = await api.put("/storefront/admin", payload);
+  return data;
+}

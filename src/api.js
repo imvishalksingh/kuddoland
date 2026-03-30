@@ -34,6 +34,7 @@ export const updateAdminProduct = (token, id, body) => authRequest(`/admin/produ
 export const deleteAdminProduct = (token, id) => authRequest(`/admin/products/${id}`, token, { method: "DELETE" });
 export const getAdminOrders = (token) => authRequest("/admin/orders", token);
 export const getAdminContacts = (token) => authRequest("/admin/contacts", token);
+export const updateStorefront = (token, body) => authRequest("/storefront/admin", token, { method: "PUT", body: JSON.stringify(body) });
 
 function authRequest(path, token, options = {}) {
   return request(path, {
