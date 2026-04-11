@@ -53,10 +53,7 @@ export function LoginPage() {
   const navigate = useNavigate();
   const setSession = useAuthStore((state) => state.setSession);
   const role = new URLSearchParams(location.search).get("role");
-  const [form, setForm] = useState({
-    email: role === "admin" ? "admin@kuddosland.com" : "",
-    password: role === "admin" ? "ChangeMe123!" : "",
-  });
+  const [form, setForm] = useState({ email: "", password: "" });
 
   return (
     <AuthShell

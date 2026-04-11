@@ -93,7 +93,15 @@
   }
 
   .cart-header h2 {
-    @apply font-display text-2xl font-bold text-brand-ink;
+    @apply font-display text-2xl font-bold text-brand-ink flex items-center;
+  }
+
+  .back-link {
+    @apply text-sm font-bold text-slate-400 hover:text-brand-coral transition-colors flex items-center gap-2;
+  }
+
+  .drawer-content {
+    @apply flex-1 flex flex-col overflow-hidden;
   }
 
   .empty-cart {
@@ -108,19 +116,15 @@
   }
 
   .cart-items {
-    @apply flex-1 overflow-y-auto p-10 space-y-8;
-    height: 45vh;
-    min-height: 400px;
+    @apply flex-1 overflow-y-auto px-6 py-4 space-y-6;
   }
 
   .cart-item {
-    @apply flex items-start gap-4 p-4 rounded-2xl relative hover:bg-white hover:shadow-lg transition-all;
-    background-color: rgba(255, 241, 232, 0.2);
-    border: 1px solid rgba(255, 224, 206, 0.5);
+    @apply flex items-start gap-4 p-4 rounded-2xl relative bg-white border border-orange-100/50 hover:shadow-md transition-all;
   }
 
   .ci-image {
-    @apply w-20 h-20 shrink-0 bg-white rounded-xl overflow-hidden border border-orange-100/30 flex items-center justify-center p-2;
+    @apply w-16 h-16 shrink-0 bg-orange-50/50 rounded-xl overflow-hidden flex items-center justify-center p-1.5;
   }
 
   .ci-image img {
@@ -128,24 +132,23 @@
   }
 
   .ci-content {
-    @apply flex-1 flex flex-col justify-between min-h-[80px];
+    @apply flex-1 flex flex-col justify-between min-h-[64px];
   }
 
   .ci-top {
-    @apply flex items-start justify-between;
-    padding-right: 1.5rem;
+    @apply flex items-start justify-between pr-8;
   }
 
   .ci-top strong {
-    @apply text-[13px] font-bold text-brand-ink leading-tight uppercase tracking-tight;
+    @apply text-sm font-bold text-brand-ink leading-tight line-clamp-1;
   }
 
   .ci-meta {
-    @apply text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-wider;
+    @apply text-[10px] font-bold text-slate-300 mt-0.5 uppercase tracking-wider;
   }
 
   .ci-bottom {
-    @apply flex items-end justify-between mt-auto;
+    @apply flex items-center justify-between mt-2;
   }
 
   .ci-price {
@@ -153,16 +156,16 @@
   }
 
   .remove-btn {
-    @apply absolute top-4 right-4 p-1 text-slate-300 hover:text-red-400 transition-colors;
+    @apply absolute top-4 right-4 p-1 text-slate-200 hover:text-red-400 transition-colors;
   }
 
   /* ── Up-Down Spinner ── */
   .qty-spinner {
-    @apply flex items-center border border-orange-100 rounded-lg bg-white overflow-hidden shadow-sm;
+    @apply flex items-center border border-orange-100 rounded-lg bg-orange-50/30 overflow-hidden;
   }
 
   .qty-val {
-    @apply w-10 text-center font-bold text-xs text-brand-ink py-2;
+    @apply w-8 text-center font-bold text-xs text-brand-ink py-1;
   }
 
   .qty-btns {
@@ -170,16 +173,69 @@
   }
 
   .qty-step {
-    @apply w-7 h-[17px] flex items-center justify-center text-[8px] text-slate-400 hover:bg-orange-50 hover:text-brand-coral transition-colors;
+    @apply w-6 h-[14px] flex items-center justify-center text-[8px] text-slate-400 hover:bg-white hover:text-brand-coral transition-colors;
   }
 
   .cart-totals {
-    @apply p-6 bg-orange-50/50 border-t border-orange-100 space-y-2;
+    @apply p-6 bg-brand-ink text-white space-y-3;
   }
 
-  .total-row {
-    @apply pt-2 mt-2 border-t border-orange-200/50 text-brand-ink font-bold text-lg;
+  .totals-row {
+    @apply flex justify-between text-sm font-medium text-white/60;
   }
+
+  .totals-row strong {
+    @apply text-white font-bold;
+  }
+
+  .total-final {
+    @apply border-t border-white/10 pt-3 mt-3 text-lg text-white font-bold;
+  }
+
+  .drawer-actions {
+    @apply space-y-3 mt-4;
+  }
+
+  .btn-text-link {
+    @apply w-full py-2 text-xs font-bold text-white/40 hover:text-white transition-colors uppercase tracking-widest;
+  }
+
+  /* ── Checkout Section ── */
+  .checkout-section {
+    @apply flex-1 overflow-y-auto px-6 py-6 space-y-8 bg-white;
+  }
+
+  .checkout-summary-mini {
+    @apply p-4 rounded-2xl bg-orange-50 border border-orange-100 flex justify-between items-center;
+  }
+
+  .checkout-summary-mini span {
+    @apply text-xs font-bold text-slate-400 uppercase tracking-widest;
+  }
+
+  .checkout-summary-mini strong {
+    @apply text-xl font-bold text-brand-ink;
+  }
+
+  .checkout-form {
+    @apply space-y-4;
+  }
+
+  .checkout-form input,
+  .checkout-form select {
+    @apply w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 font-body text-sm focus:outline-none focus:ring-2 focus:ring-brand-coral/20 focus:bg-white transition-all;
+  }
+
+  .form-grid {
+    @apply grid grid-cols-2 gap-4;
+  }
+
+  .status {
+    @apply text-xs font-bold p-3 rounded-xl text-center;
+  }
+
+  .status.success { @apply bg-green-50 text-green-600; }
+  .status.error { @apply bg-red-50 text-red-600; }
 
   /* ── Buttons ── */
   .btn-full {

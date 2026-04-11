@@ -3,11 +3,10 @@ import useDataStore from '../store/useDataStore';
 
 export default function Footer() {
   const { storefront } = useDataStore();
-  if (!storefront) return null;
 
-  const email = storefront.supportEmail || "support@kuddoland.com";
-  const phone = storefront.whatsappNumber || "+91-96905-60532";
-  const socials = storefront.socialLinks || {};
+  const email = storefront?.supportEmail || "support@kuddoland.com";
+  const phone = storefront?.whatsappNumber || "+91-96905-60532";
+  const socials = storefront?.socialLinks || {};
 
   const defaultColumns = [
     {
@@ -51,7 +50,7 @@ export default function Footer() {
     }
   ];
 
-  const columns = storefront.footerColumns?.length ? storefront.footerColumns : defaultColumns;
+  const columns = storefront?.footerColumns?.length ? storefront.footerColumns : defaultColumns;
 
   return (
     <footer className="tt-footer bg-brand-ink text-white mt-10">

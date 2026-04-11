@@ -183,11 +183,11 @@ export function AdminProductsPage() {
     },
     onError: (error) => toast.error(error.response?.data?.message || "Archive failed"),
   });
-  
+
   const handleBulkUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     setIsUploading(true);
     const loadingToast = toast.loading("Uploading products via CSV...");
     try {
@@ -295,10 +295,10 @@ export function AdminProductFormPage() {
     onSuccess: (response) => {
       setForm((current) => {
         const nextImages = [...current.images, response.url];
-        return { 
-          ...current, 
+        return {
+          ...current,
           images: nextImages,
-          image: current.image || response.url 
+          image: current.image || response.url
         };
       });
       toast.success("Image uploaded");
@@ -344,7 +344,7 @@ export function AdminProductFormPage() {
           </div>
           <div className="space-y-4">
             <Field label="Primary image URL" value={form.image} onChange={(event) => setForm((current) => ({ ...current, image: event.target.value }))} />
-            
+
             {form.images.length > 0 && (
               <div className="space-y-2">
                 <span className="text-sm font-semibold text-brand-ink">Product Media ({form.images.length})</span>
@@ -406,10 +406,10 @@ export function AdminProductFormPage() {
             Active on storefront
           </label>
           <div className="flex flex-wrap gap-3">
-            <Button onClick={() => mutation.mutate({ 
-              ...form, 
-              comparePrice: form.comparePrice === "" ? null : Number(form.comparePrice), 
-              costPrice: form.costPrice === "" ? null : Number(form.costPrice), 
+            <Button onClick={() => mutation.mutate({
+              ...form,
+              comparePrice: form.comparePrice === "" ? null : Number(form.comparePrice),
+              costPrice: form.costPrice === "" ? null : Number(form.costPrice),
               images: form.images.length ? form.images : (form.image ? [form.image] : [])
             })}>
               {isEdit ? "Update product" : "Create product"}
@@ -1059,19 +1059,19 @@ export function AdminStorefrontSettingsPage() {
               <Field label="Top Brands Heading" value={form.homeSections?.topBrandsHeading || ""} onChange={e => setForm({ ...form, homeSections: { ...form.homeSections, topBrandsHeading: e.target.value } })} />
             </div>
           </AdminCard>
-          
+
           <AdminCard title="Footer Columns (JSON raw edit)">
-            <TextareaField 
-              label="Edit footer data array" 
-              value={JSON.stringify(form.footerColumns, null, 2)} 
+            <TextareaField
+              label="Edit footer data array"
+              value={JSON.stringify(form.footerColumns, null, 2)}
               onChange={e => {
                 try {
                   const val = JSON.parse(e.target.value);
                   setForm({ ...form, footerColumns: val });
-                } catch(err) {
+                } catch (err) {
                   // ignore parse error while typing
                 }
-              }} 
+              }}
             />
           </AdminCard>
         </div>

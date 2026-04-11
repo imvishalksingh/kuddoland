@@ -1,62 +1,49 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCartStore } from "../../store/cartStore";
 import { useWishlist } from "../../hooks/useWishlist";
 import useUIStore from "../../store/useUIStore";
-import { clsx } from "clsx";
+import "../../styles/kuddo-shop.css";
 
-const PINK = "#F472B6";
-const PINK_BG = "#FDF2F8";
-
-const badgeMeta = {
-  Bestseller: { bg: "#FEF3C7", color: "#92400E" },
-  New:        { bg: "#DBEAFE", color: "#1E40AF" },
-  Sale:       { bg: "#FCE7F3", color: "#9D174D" },
-  Hot:        { bg: "#FEE2E2", color: "#991B1B" },
+const tagStyles = {
+  Bestseller: { bg: "#FFF8E1", color: "#F59E0B" },
+  New:        { bg: "#EFF6FF", color: "#3B82F6" },
+  Hot:        { bg: "#FFF1F0", color: "#F43F5E" },
+  Sale:       { bg: "#F0FDF4", color: "#22C55E" },
+  "Top Rated":{ bg: "#F5F3FF", color: "#8B5CF6" },
 };
 
-const emojiMap = { 
-  1: "🧸", 2: "🚀", 3: "🦕", 4: "🪄", 5: "👨‍🍳", 6: "🏰" 
-};
+function Stars({ rating }) {
+  return (
+    <div style={{ display: "flex", gap: "2px" }}>
+      {[1, 2, 3, 4, 5].map(s => (
+        <svg key={s} width="10" height="10" viewBox="0 0 24 24"
+          fill={s <= Math.round(rating) ? "#FBBF24" : "#E5E7EB"}
+          stroke="none">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+      ))}
+    </div>
+  );
+}
 
 function HeartIcon({ filled }) {
   return (
-    <svg width="17" height="17" viewBox="0 0 24 24"
-      fill={filled ? PINK : "none"}
-      stroke={filled ? PINK : PINK}
-      strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    <svg width="14" height="14" viewBox="0 0 24 24"
+      fill={filled ? "#F43F5E" : "none"}
+      stroke={filled ? "#F43F5E" : "#6B7280"}
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
     </svg>
   );
 }
 
-function EyeIcon() {
+function CartIcon() {
   return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-      stroke={PINK} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-      <circle cx="12" cy="12" r="3"/>
-    </svg>
-  );
-}
-
-function BagIcon({ added }) {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-      stroke={added ? "#22C55E" : PINK}
-      strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-      <line x1="3" y1="6" x2="21" y2="6"/>
-      <path d="M16 10a4 4 0 01-8 0"/>
-    </svg>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
-      stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12"/>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
     </svg>
   );
 }
@@ -68,152 +55,147 @@ export function ProductCard({ product }) {
   const setCartOpen = useUIStore((state) => state.setCartOpen);
 
   const [selectedColor, setSelectedColor] = useState(0);
-  const [added, setAdded] = useState(false);
+  const [cartState, setCartState] = useState("idle");
+  const [hovered, setHovered] = useState(false);
 
   const liked = isWishlisted(product.id);
-  const tag = product.featured ? "Bestseller" : (product.price > 699 ? "Hot" : "New");
-  const colors = product.colors || ["#F4C430", "#F4A7B9", "#E05C5C", "#A8D5BA"];
+  const originalPrice = product.comparePrice || product.originalPrice || product.price * 1.25;
+  const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
+  const tag = product.tag || (product.featured ? "Bestseller" : (product.price > 699 ? "Hot" : "New"));
+  const colors = product.colors || ["#E8C547", "#F4A7B9", "#B39DDB", "#80CBC4"];
   const image = product.images?.[0] || product.image;
 
-  const handleAdd = (e) => {
+  const handleCart = (e) => {
     e.stopPropagation();
-    if (added) return;
+    if (cartState !== "idle") return;
+    setCartState("adding");
     addItem(product, 1);
-    setAdded(true);
     setCartOpen(true);
-    setTimeout(() => setAdded(false), 2500);
+    setTimeout(() => setCartState("done"), 600);
+    setTimeout(() => setCartState("idle"), 2000);
   };
 
   return (
     <div
+      className="product-card"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       onClick={() => navigate(`/shop/${product.slug}`)}
-      className="group relative w-full flex-shrink-0 cursor-pointer overflow-hidden rounded-[20px] bg-white shadow-sm transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1.5 hover:shadow-xl"
     >
-      {/* Image area */}
-      <div className="relative w-full pt-[100%] bg-[#F5F5F5] overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-          {image ? (
-            <img
-              src={image}
-              alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-[400ms] ease-out group-hover:scale-105"
-            />
-          ) : (
-            <div className="text-[64px] transition-transform duration-[350ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] opacity-[0.85] select-none group-hover:scale-110 group-hover:-translate-y-1">
-              {emojiMap[parseInt(product.id.toString().slice(-1)) % 6 + 1] || "🧸"}
-            </div>
-          )}
-        </div>
+      {/* ── Image Block ── */}
+      <div className="img-block">
+        {image ? (
+          <img src={image} alt={product.name} />
+        ) : (
+          <div style={{
+            position: "absolute", inset: 0,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: "48px",
+          }}>
+            🧸
+          </div>
+        )}
 
-        {/* Badge */}
+        {/* Tag Badge */}
         {tag && (
-          <div 
-            className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wider z-[2]"
-            style={{ 
-              background: badgeMeta[tag]?.bg || "#F3F4F6", 
-              color: badgeMeta[tag]?.color || "#374151",
-              fontFamily: "'DM Sans', sans-serif"
-            }}
-          >
+          <div className="product-tag" style={{
+            background: tagStyles[tag]?.bg || "#F9FAFB",
+            color: tagStyles[tag]?.color || "#6B7280",
+          }}>
             {tag}
           </div>
         )}
 
-        {/* Action buttons — right side */}
-        <div className="absolute top-2.5 right-2.5 flex flex-col gap-1.5 z-[3]">
-          {[
-            {
-              key: "wish",
-              icon: <HeartIcon filled={liked} />,
-              onClick: (e) => { e.stopPropagation(); toggleWishlist(product.id); },
-              alwaysShow: liked,
-              bgOverride: liked ? PINK_BG : null,
-            },
-            {
-              key: "eye",
-              icon: <EyeIcon />,
-              onClick: (e) => e.stopPropagation(),
-              alwaysShow: false,
-            },
-          ].map((btn, i) => (
-            <button
-              key={btn.key}
-              onClick={btn.onClick}
-              className={clsx(
-                "flex items-center justify-center w-8 h-8 rounded-full border border-[#F0F0F0] backdrop-blur-sm shadow-md transition-all duration-[280ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] sm:w-9 sm:h-9",
-                btn.alwaysShow 
-                  ? "opacity-100 translate-x-0 scale-100" 
-                  : "opacity-100 translate-x-0 scale-100 md:opacity-0 md:translate-x-2 md:scale-90 md:group-hover:opacity-100 md:group-hover:translate-x-0 md:group-hover:scale-100 md:pointer-events-none md:group-hover:pointer-events-auto"
-              )}
-              style={{
-                background: btn.bgOverride || "rgba(255,255,255,0.95)",
-                transitionDelay: `${i * 45}ms`,
-              }}
-            >
-              {btn.icon}
-            </button>
-          ))}
-        </div>
-
-        {/* Quick Add Button */}
+        {/* Wishlist Button */}
         <button
-          onClick={handleAdd}
-          className={clsx(
-            "absolute bottom-3 left-3 right-3 py-2.5 text-white text-[11px] font-bold rounded-[14px] shadow-lg transition-all duration-[350ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] z-[10] flex items-center justify-center gap-2",
-            "opacity-100 translate-y-0 md:opacity-0 md:translate-y-3 md:group-hover:opacity-100 md:group-hover:translate-y-0 md:pointer-events-none md:group-hover:pointer-events-auto"
-          )}
-          style={{ 
-            fontFamily: "'DM Sans', sans-serif",
-            backgroundColor: added ? "#22C55E" : "#111827",
+          className="wishlist-btn"
+          onClick={e => { e.stopPropagation(); toggleWishlist(product.id); }}
+          style={{
+            opacity: hovered || liked ? 1 : 0,
+            transform: hovered || liked ? "scale(1)" : "scale(0.8)",
+            pointerEvents: hovered || liked ? "auto" : "none",
           }}
         >
-          {added ? (
-            <>
-              <CheckIcon />
-              <span>Added!</span>
-            </>
-          ) : (
-            <>
-              <BagIcon added={false} />
-              <span>Add to Cart</span>
-            </>
-          )}
+          <HeartIcon filled={liked} />
         </button>
+
+        {/* Discount Badge */}
+        {discount > 0 && (
+          <div className="discount-badge">
+            -{discount}%
+          </div>
+        )}
       </div>
 
-      {/* Card body */}
-      <div className="p-3 pb-3.5">
-        <p className="text-[13px] font-bold text-[#111827] mb-0.5 leading-tight line-clamp-1 sm:text-[14px]" style={{ fontFamily: "'Sora', sans-serif" }}>
-          {product.name}
-        </p>
+      {/* ── Card Body ── */}
+      <div className="card-body">
+        <div className="product-name">{product.name}</div>
+        <div className="product-subtitle">{product.brand || product.category || "Premium Quality"}</div>
 
-        <p className="text-[14px] font-extrabold text-[#111827] mb-2.5 sm:text-[15px]" style={{ fontFamily: "'Sora', sans-serif" }}>
-          ₹{product.price.toFixed(2)}
-        </p>
+        {/* Stars */}
+        <div style={{ display: "flex", alignItems: "center", gap: "4px", marginBottom: "6px" }}>
+          <Stars rating={product.rating || 5} />
+          <span style={{ fontSize: "10px", color: "#9CA3AF", fontFamily: "'Inter', sans-serif" }}>
+            {product.rating || "5.0"}
+          </span>
+        </div>
 
-        {/* Swatches */}
-        <div className="flex items-center gap-1.5">
+        {/* Price */}
+        <div className="price-row">
+          <span className="price-current">₹{product.price}</span>
+          {originalPrice > product.price && (
+            <span className="price-old">₹{Math.round(originalPrice)}</span>
+          )}
+        </div>
+
+        {/* Color Swatches */}
+        <div className="swatches">
           {colors.slice(0, 3).map((c, i) => (
             <button
               key={i}
               onClick={(e) => { e.stopPropagation(); setSelectedColor(i); }}
-              className="rounded-full shrink-0 transition-all duration-[200ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]"
               style={{
-                width: i === selectedColor ? "14px" : "10px",
-                height: i === selectedColor ? "14px" : "10px",
+                width: i === selectedColor ? "16px" : "12px",
+                height: i === selectedColor ? "16px" : "12px",
+                borderRadius: "50%",
                 background: c,
+                border: "none",
                 outline: i === selectedColor ? `2px solid ${c}` : "2px solid transparent",
                 outlineOffset: "1.5px",
-                boxShadow: i === selectedColor ? `0 2px 7px ${c}90` : "none",
+                cursor: "pointer",
+                padding: 0,
+                transition: "all 0.15s ease",
+                flexShrink: 0,
               }}
             />
           ))}
           {colors.length > 3 && (
-            <span className="text-[9px] font-bold text-[#9CA3AF]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              +{colors.length - 3}
-            </span>
+            <span style={{ fontSize: "10px", color: "#9CA3AF", fontWeight: 700 }}>+{colors.length - 3}</span>
           )}
         </div>
+
+        {/* Add to Cart */}
+        <button
+          className="btn-add"
+          onClick={handleCart}
+          style={{
+            background: cartState === "done" ? "#22C55E" : "#111827",
+            boxShadow: cartState === "done"
+              ? "0 4px 14px rgba(34,197,94,0.3)"
+              : hovered ? "0 4px 14px rgba(17,24,39,0.2)" : "none",
+          }}
+        >
+          {cartState === "done" ? (
+            <>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Added!
+            </>
+          ) : (
+            <>{cartState === "adding" ? "Adding…" : <><CartIcon /> Add to Cart</>}</>
+          )}
+        </button>
       </div>
     </div>
   );

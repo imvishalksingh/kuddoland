@@ -1,42 +1,16 @@
 import { Seo } from "../components/ui/Seo";
 import { Link } from "react-router-dom";
+import { AboutSeoContent } from "../components/ui/AboutSeoContent";
+import { Mail, Phone } from "lucide-react";
 
 export function AboutPage() {
   return (
-    <main className="page-shell py-16">
-      <Seo title="About Us | Kuddoland" description="Learn more about the magic behind Kuddoland." />
-      
-      <div className="mx-auto max-w-4xl space-y-16">
-        <section className="text-center space-y-6">
-          <p className="chip mx-auto">Our Story</p>
-          <h1 className="font-display text-5xl md:text-6xl font-extrabold text-brand-ink">Welcome to Kuddoland</h1>
-          <p className="text-xl text-slate-600 font-body max-w-2xl mx-auto leading-relaxed">
-            Where imagination meets cuddles. We believe every child deserves a magical companion to share their biggest dreams and coziest moments.
-          </p>
-        </section>
-
-        <div className="grid md:grid-cols-2 gap-8 items-center">
-          <div className="rounded-[40px] bg-brand-peach/30 p-8 aspect-square flex items-center justify-center relative overflow-hidden">
-             {/* Decorative blobs */}
-             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-peach rounded-bl-full opacity-50"></div>
-             <div className="text-9xl relative z-10">🧸</div>
-          </div>
-          <div className="space-y-6">
-            <h2 className="font-display text-3xl font-bold text-brand-ink">Crafted with Love, Built for Hugs</h2>
-            <p className="text-lg text-slate-600 font-body leading-relaxed">
-              Founded in 2024, Kuddoland started with a simple idea: to create the softest, safest, and most lovable stuffed animals in the world. Our toys aren&apos;t just fabric and stuffing; they are keepsakes designed to withstand years of adventures and bedtime snuggles.
-            </p>
-            <p className="text-lg text-slate-600 font-body leading-relaxed">
-              Every detail, from the embroidered eyes to the super-soft faux fur, is carefully chosen to ensure maximum adorableness and safety for your little ones.
-            </p>
-            <div className="pt-4">
-              <Link to="/shop" className="inline-block rounded-full bg-brand-coral px-8 py-4 text-lg font-bold text-white shadow-md transition-all hover:shadow-lg hover:-translate-y-1">
-                Meet Our Friends
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+    <main className="min-h-screen bg-[#FFFBF7]">
+      <Seo 
+        title="Kuddoland – Safe, Fun & Affordable Toys for Kids Online" 
+        description="Shop safe, fun & affordable toys for kids at Kuddoland. Explore engaging, educational toys loved by parents. Easy ordering & trusted quality." 
+      />
+      <AboutSeoContent />
     </main>
   );
 }
@@ -83,14 +57,14 @@ export function ContactPage() {
               <h3 className="font-display text-2xl font-bold mb-6">Contact Info</h3>
               <div className="space-y-6 font-body">
                 <div className="flex gap-4">
-                  <span className="text-2xl">📧</span>
+                  <span className="text-2xl text-brand-peach"><Mail /></span>
                   <div>
                     <p className="font-bold text-brand-peach">Email</p>
                     <p className="text-slate-300">support@kuddoland.com</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <span className="text-2xl">📞</span>
+                  <span className="text-2xl text-brand-peach"><Phone /></span>
                   <div>
                     <p className="font-bold text-brand-peach">Phone</p>
                     <p className="text-slate-300">1-800-KUDDOS (583-367)</p>

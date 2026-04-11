@@ -6,6 +6,7 @@ import { useCategories } from "../hooks/useCategories";
 import { useCartStore } from "../store/cartStore";
 import { useWishlist } from "../hooks/useWishlist";
 import { Seo } from "../components/ui/Seo";
+import { StoreSeoContent } from "../components/ui/StoreSeoContent";
 import useDataStore from "../store/useDataStore";
 
 const promoCards = [
@@ -30,10 +31,10 @@ const promoCards = [
 ];
 
 const ageItems = [
-  { title: "0 - 12", subtitle: "months", image: "/age_bg_1.png" },
-  { title: "1 - 2", subtitle: "years", image: "/age_bg_2.png" },
-  { title: "3+", subtitle: "years", image: "/age_bg_3.png" },
-  { title: "5+", subtitle: "years", image: "/age_bg_4.png" },
+  { title: "0 - 1", subtitle: "years", image: "/age_bg_1.png" },
+  { title: "2 - 4", subtitle: "years", image: "/age_bg_2.png" },
+  { title: "5 - 8", subtitle: "years", image: "/age_bg_3.png" },
+  { title: "9 - 12", subtitle: "years", image: "/age_bg_4.png" },
 ];
 
 const newsItems = [
@@ -178,8 +179,8 @@ export function HomePage() {
     return () => window.clearInterval(slider);
   }, [heroSlides.length]);
 
-  const topPicks = useMemo(() => products.slice(0, 6), [products]);
-  const arrivals = useMemo(() => products.slice(0, 6), [products]);
+  const topPicks = useMemo(() => products.slice(0, 4), [products]);
+  const arrivals = useMemo(() => products.slice(0, 4), [products]);
 
   const filteredArrivals = useMemo(() => {
     return arrivals.filter(p => {
@@ -207,7 +208,10 @@ export function HomePage() {
         }
         .card-in { animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
       `}</style>
-      <Seo title="Toy Time Home | Kuddosland" description="Pixel-matched Toy Time style home page." />
+      <Seo 
+        title="Buy Kids Toys Online in India | Kuddoland – Flat 10% Off" 
+        description="Shop kids toys online at Kuddoland. Discover safe, fun & educational toys for all ages. Enjoy Kids Toys Online Shopping with a flat 10% discount. Order now!" 
+      />
 
       {/* Hero Section */}
       <section
@@ -360,8 +364,10 @@ export function HomePage() {
       <section className="page-shell pt-12 sm:pt-16 lg:pt-20">
         <h2 className="text-center font-body text-[38px] font-medium leading-none text-black sm:text-[48px] lg:text-[62px]">Shop By Age</h2>
         <div className="mt-10 grid gap-6 sm:mt-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-8">
-          {ageItems.map((item) => (
-            <Link key={item.title} to={`/shop?age=${item.title.replace(/\s/g, "")}`} className="group flex justify-center transition-transform duration-300 hover:-translate-y-2">
+          {ageItems.map((item) => {
+            const ageParam = item.title === "0 - 1" ? "0-1 year" : `${item.title.replace(/\s/g, "")} years`;
+            return (
+              <Link key={item.title} to={`/shop?age=${encodeURIComponent(ageParam)}`} className="group flex justify-center transition-transform duration-300 hover:-translate-y-2">
               <div className="relative flex h-[126px] w-[220px] items-center justify-center bg-contain bg-center bg-no-repeat transition-transform duration-500 group-hover:scale-110 sm:h-[148px] sm:w-[250px] lg:h-[170px] lg:w-[292px]" style={{ backgroundImage: `url(${item.image})` }}>
                 <div className="text-center transition-opacity group-hover:opacity-90">
                   <p className="font-body text-[28px] font-bold text-black sm:text-[32px] lg:text-[38px] underline-offset-4 group-hover:underline">{item.title}</p>
@@ -369,42 +375,56 @@ export function HomePage() {
                 </div>
               </div>
             </Link>
-          ))}
+            );
+          })}
         </div>
       </section>
 
       {/* Special Offer & Top Picks */}
+      {/* Special Offer Section */}
       <section className="page-shell pt-14 sm:pt-18 lg:pt-24">
-        <div className="grid gap-10 lg:grid-cols-[1.02fr_1.08fr]">
-          <article className="overflow-hidden rounded-[24px] bg-[#eef5fb] lg:rounded-[34px]">
-            <div className="px-5 pt-8 text-center sm:px-8 lg:px-12 lg:pt-10">
-              <h2 className="font-body text-[44px] font-medium text-black sm:text-[52px] lg:text-[68px] leading-[1.1]">{homeSections.specialOfferHeading || "Special Offer"}</h2>
-              <p className="mx-auto mt-3 max-w-[560px] text-[16px] text-black sm:text-[18px] lg:mt-4 lg:text-[20px]">Praesent tristique magna sit amet purus gravida quis blandit.</p>
-              <Link to="/shop" className="mt-6 inline-flex rounded-[16px] bg-[#ff7f83] px-8 py-4 text-[16px] font-medium text-white sm:px-10 sm:py-4 sm:text-[17px] lg:mt-8 lg:rounded-[18px] lg:px-11 lg:py-5 lg:text-[18px]">
-                Shop Now
-              </Link>
-            </div>
-            <div className="mt-8 grid grid-cols-4 px-4 text-center sm:px-8 lg:mt-10 lg:px-10">
+        <article className="overflow-hidden rounded-[24px] bg-[#eef5fb] lg:rounded-[34px] relative group">
+          <div className="px-5 py-12 text-center sm:px-8 lg:px-12 lg:py-20 flex flex-col items-center relative z-10">
+            <h2 className="font-body text-[44px] font-medium text-black sm:text-[52px] lg:text-[72px] leading-[1.1]">
+              {homeSections.specialOfferHeading || "Special Offer"}
+            </h2>
+            <p className="mx-auto mt-4 max-w-[600px] text-[16px] text-black/70 sm:text-[18px] lg:text-[22px]">
+              Praesent tristique magna sit amet purus gravida quis blandit.
+            </p>
+            
+            <div className="mt-10 grid grid-cols-4 gap-4 px-4 text-center sm:gap-8 lg:gap-12">
               {[{ label: "Days", value: countdown.days }, { label: "Hrs", value: countdown.hours }, { label: "Mins", value: countdown.minutes }, { label: "Secs", value: countdown.seconds }].map((item, index) => (
-                <div key={item.label} className="relative">
-                  <p className="font-body text-[34px] font-medium leading-none text-black sm:text-[48px] lg:text-[68px]">{String(item.value).padStart(2, "0")}</p>
-                  <p className="mt-3 text-[14px] text-black sm:text-[18px] lg:mt-6 lg:text-[22px]">{item.label}</p>
-                  {index < 3 && <span className="absolute right-0 top-0 text-[34px] font-thin text-black/60 sm:text-[48px] lg:text-[70px]">|</span>}
+                <div key={item.label} className="relative px-2">
+                  <p className="font-body text-[38px] font-bold leading-none text-brand-coral sm:text-[54px] lg:text-[72px]">{String(item.value).padStart(2, "0")}</p>
+                  <p className="mt-3 text-[12px] font-bold uppercase tracking-widest text-slate-500 sm:text-[14px] lg:text-[16px]">{item.label}</p>
                 </div>
               ))}
             </div>
-            <img className="mt-6 h-[360px] w-full object-cover sm:h-[520px] lg:mt-8 lg:h-[690px]" src="/hero2.png" alt="Special Offer" />
-          </article>
 
-          <div>
-            <h2 className="font-body text-[40px] font-medium leading-[1.1] text-black sm:text-[48px] lg:text-[60px]">{homeSections.topPicksHeading || "Top Picks For Youngsters"}</h2>
-            <p className="mt-4 text-[16px] text-slate-500 sm:text-[18px] lg:mt-6 lg:text-[20px]">Justo Eget Magna Fermentum Iaculis.</p>
-            <div className="mt-8 grid gap-x-6 gap-y-10 sm:mt-10 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3 lg:gap-x-8 lg:gap-y-14">
-              {topPicks.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <Link to="/shop" className="mt-10 inline-flex rounded-[18px] bg-brand-coral px-12 py-5 text-[18px] font-bold text-white shadow-xl shadow-brand-coral/20 hover:scale-105 transition-all">
+              Grab Your Discount Now &rarr;
+            </Link>
           </div>
+          <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity">
+            <img className="h-full w-full object-cover" src="/hero2.png" alt="Special Offer Background" />
+          </div>
+        </article>
+      </section>
+
+      {/* Top Picks For Youngsters (Full Width for proper card size) */}
+      <section className="page-shell pt-14 sm:pt-18 lg:pt-24">
+        <div className="text-center mb-12">
+          <h2 className="font-body text-[40px] font-medium leading-[1.1] text-black sm:text-[50px] lg:text-[60px]">{homeSections.topPicksHeading || "Top Picks For Youngsters"}</h2>
+          <div className="mt-4 h-1.5 w-24 bg-brand-coral rounded-full mx-auto" />
+          <p className="mt-6 text-[16px] text-slate-500 sm:text-[18px] lg:text-[20px] max-w-2xl mx-auto">
+            Discover our curated collection of best-selling toys loved by parents and kids alike.
+          </p>
+        </div>
+        
+        <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-14">
+          {topPicks.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </div>
       </section>
 
@@ -442,6 +462,9 @@ export function HomePage() {
         </div>
 
       </section>
+
+      {/* --- RICH CONTENT SECTIONS --- */}
+      <StoreSeoContent />
 
       {/* News & Brands */}
       <section className="page-shell py-12 sm:py-14">
