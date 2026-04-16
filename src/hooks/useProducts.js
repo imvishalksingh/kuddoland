@@ -8,9 +8,9 @@ export function useProducts(params = {}) {
     queryFn: async () => {
       try {
         const data = await fetchProducts(params);
-        return data.items?.length ? data.items : featuredProducts;
+        return data.items || [];
       } catch {
-        return featuredProducts;
+        return [];
       }
     },
   });
@@ -34,8 +34,7 @@ export function useProduct(slug) {
         const data = await fetchProduct(slug);
         return data; // returns { success: true, item: {...} }
       } catch {
-        const mock = featuredProducts.find((p) => p.slug === slug);
-        return { item: mock || featuredProducts[0] };
+        return { item: null };
       }
     },
   });

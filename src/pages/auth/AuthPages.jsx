@@ -48,88 +48,7 @@ function AuthShell({ title, description, ctaLabel, fields, onSubmit, footer }) {
   );
 }
 
-export function LoginPage() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const setSession = useAuthStore((state) => state.setSession);
-  const role = new URLSearchParams(location.search).get("role");
-  const [form, setForm] = useState({ email: "", password: "" });
-
-  return (
-    <AuthShell
-      title="Welcome Back"
-      description="Sign in to access your wishlist, orders, and exclusive deals."
-      ctaLabel={role === "admin" ? "Login as admin" : "Sign In"}
-      fields={
-        <>
-          <Input placeholder="Email Address" type="email" value={form.email} onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} required />
-          <Input placeholder="Password" type="password" value={form.password} onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))} required />
-          <div className="flex justify-end pr-1">
-            <Link to="/forgot-password" className="text-sm font-bold text-brand-coral hover:underline">Forgot password?</Link>
-          </div>
-        </>
-      }
-      footer={
-        <p>Don&apos;t have an account? <Link to="/register" className="font-bold text-brand-coral hover:underline">Sign up</Link></p>
-      }
-      onSubmit={async (event) => {
-        event.preventDefault();
-        try {
-          await ensureCsrfToken();
-          const response = await login(form);
-          setSession({ user: response.user, accessToken: response.accessToken });
-          if (!response.user.isVerified) {
-            toast("Verify your email before checkout or reviews.");
-          }
-          toast.success("Welcome back!");
-          navigate(response.user.role === "ADMIN" ? "/admin" : "/account");
-        } catch (error) {
-          toast.error(error.response?.data?.message || "Login failed");
-        }
-      }}
-    />
-  );
-}
-
-export function RegisterPage() {
-  const navigate = useNavigate();
-  const setSession = useAuthStore((state) => state.setSession);
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
-
-  return (
-    <AuthShell
-      title="Create Account"
-      description="Join Kuddoland for a magical shopping experience."
-      ctaLabel="Sign Up"
-      fields={
-        <>
-          <Input placeholder="Full Name" value={form.name} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} required />
-          <Input placeholder="Email Address" type="email" value={form.email} onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} required />
-          <Input placeholder="Password (min 6 characters)" type="password" value={form.password} onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))} required minLength={6} />
-        </>
-      }
-      footer={
-        <p>Already have an account? <Link to="/login" className="font-bold text-brand-coral hover:underline">Sign in</Link></p>
-      }
-      onSubmit={async (event) => {
-        event.preventDefault();
-        try {
-          await ensureCsrfToken();
-          const response = await register(form);
-          setSession({ user: response.user, accessToken: response.accessToken });
-          if (response.verificationTokenPreview) {
-            toast.success(`Dev verify token: ${response.verificationTokenPreview}`);
-          } else {
-            toast.success("Account created. Check your email to verify it.");
-          }
-          navigate("/account");
-        } catch (error) {
-          toast.error(error.response?.data?.message || "Registration failed");
-        }
-      }}
-    />
-  );
-}
+// LoginPage and RegisterPage removed in favor of global AuthModal
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState("parent@example.com");
@@ -142,7 +61,7 @@ export function ForgotPasswordPage() {
         <Input placeholder="Email Address" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required />
       }
       footer={
-        <p>Remember your password? <Link to="/login" className="font-bold text-brand-coral hover:underline">Sign in</Link></p>
+        <p>Remember your password? <Link to="/" className="font-bold text-brand-coral hover:underline">Sign in</Link></p>
       }
       onSubmit={async (event) => {
         event.preventDefault();
@@ -173,7 +92,7 @@ export function ResetPasswordPage() {
         </>
       }
       footer={
-        <p><Link to="/login" className="font-bold text-brand-coral hover:underline">Back to Sign In</Link></p>
+        <p><Link to="/" className="font-bold text-brand-coral hover:underline">Back to Sign In</Link></p>
       }
       onSubmit={async (event) => {
         event.preventDefault();
@@ -238,7 +157,7 @@ export function VerifyEmailPage() {
                     await logoutAllSessionsRequest();
                     logout();
                     toast.success("Logged out from all sessions");
-                    navigate("/login");
+                    navigate("/");
                   } catch (error) {
                     toast.error(error.response?.data?.message || "Logout failed");
                   }

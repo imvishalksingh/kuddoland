@@ -43,7 +43,7 @@
 
   /* ── Top Bar ── */
   .top-bar {
-    @apply bg-brand-ink text-white py-2 text-[11px] font-bold uppercase tracking-widest hidden md:block;
+    @apply bg-brand-ink text-white py-2 text-xs font-bold uppercase tracking-widest hidden md:block;
   }
 
   .top-bar-inner {
@@ -144,7 +144,7 @@
   }
 
   .ci-meta {
-    @apply text-[10px] font-bold text-slate-300 mt-0.5 uppercase tracking-wider;
+    @apply text-xs font-bold text-slate-300 mt-0.5 uppercase tracking-wider;
   }
 
   .ci-bottom {
@@ -173,7 +173,7 @@
   }
 
   .qty-step {
-    @apply w-6 h-[14px] flex items-center justify-center text-[8px] text-slate-400 hover:bg-white hover:text-brand-coral transition-colors;
+    @apply w-6 h-4 flex items-center justify-center text-xs text-slate-400 hover:bg-white hover:text-brand-coral transition-colors;
   }
 
   .cart-totals {
@@ -297,7 +297,7 @@
   }
 
   .footer-bottom {
-    @apply py-8 border-t text-[11px] font-bold uppercase tracking-widest;
+    @apply py-8 border-t text-xs font-bold uppercase tracking-widest;
     border-color: rgba(255, 255, 255, 0.05);
     color: rgba(255, 255, 255, 0.4);
   }

@@ -79,7 +79,7 @@ const newsItems = [
 
 function heroImageClass(position) {
   const base =
-    "absolute top-1/2 left-1/2 h-auto w-[210px] -translate-y-1/2 object-contain transition-all duration-[900ms] ease-[cubic-bezier(0.77,0,0.175,1)] sm:w-[300px] lg:w-[420px]";
+    "absolute top-1/2 left-1/2 h-auto w-64 -translate-y-1/2 object-contain transition-all duration-[900ms] ease-[cubic-bezier(0.77,0,0.175,1)] sm:w-[420px] lg:w-[540px]";
 
   if (position === "center") {
     return `${base} z-[3] translate-x-[-50%] scale-100 opacity-100 drop-shadow-[0_20px_30px_rgba(0,0,0,0.1)]`;
@@ -113,7 +113,7 @@ function heroTextClass(position) {
 
 export function HomePage() {
   const { storefront } = useDataStore();
-  const { data: products = [] } = useProducts({ featured: true });
+  const { data: products = [] } = useProducts({});
   const { data: categories = [] } = useCategories();
   const [countdown, setCountdown] = useState({ days: 2, hours: 3, minutes: 48, seconds: 15 });
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -179,13 +179,22 @@ export function HomePage() {
     return () => window.clearInterval(slider);
   }, [heroSlides.length]);
 
-  const topPicks = useMemo(() => products.slice(0, 4), [products]);
-  const arrivals = useMemo(() => products.slice(0, 4), [products]);
+  const topPicks = useMemo(() => {
+    const featured = products.filter(p => p.isFeatured);
+    return featured.length > 0 ? featured.slice(0, 4) : products.slice(0, 4);
+  }, [products]);
+
+  const arrivals = useMemo(() => {
+    const topPicksIds = new Set(topPicks.map(p => p.id));
+    return products.filter(p => !topPicksIds.has(p.id)).slice(0, 8);
+  }, [products, topPicks]);
 
   const filteredArrivals = useMemo(() => {
     return arrivals.filter(p => {
-      if (activeArrivalsFilter === "Under ₹600") return p.price < 600;
-      if (activeArrivalsFilter === "Top Rated") return p.rating >= 4.7;
+      if (activeArrivalsFilter === "Under ₹99") return p.price < 99;
+      if (activeArrivalsFilter === "Under ₹299") return p.price < 299;
+      if (activeArrivalsFilter === "Under ₹499") return p.price < 499;
+      if (activeArrivalsFilter === "Top Rated") return (p.rating || 4.5) >= 4.7;
       if (activeArrivalsFilter === "On Sale") return (p.comparePrice || p.price + 100) - p.price > 150;
       return true;
     });
@@ -222,10 +231,10 @@ export function HomePage() {
         onTouchStart={handleDragStart}
         onTouchEnd={handleDragEnd}
       >
-        <div className="page-shell min-h-[560px] py-8 sm:min-h-[640px] sm:py-10 lg:min-h-[700px] lg:py-0">
+        <div className="mx-auto max-w-[1440px] px-4 sm:px-8 min-h-[480px] py-12 sm:min-h-[520px] sm:py-16 lg:min-h-[600px] lg:pt-24 lg:pb-12">
           <div className="grid min-h-[inherit] items-center gap-8 lg:grid-cols-[0.42fr_0.58fr]">
-            <div className="order-2 px-2 text-center lg:order-1 lg:px-0 lg:pl-20 lg:text-left">
-              <div className="relative mx-auto h-[250px] max-w-[540px] sm:h-[280px] lg:mx-0 lg:h-[310px]">
+            <div className="order-2 px-2 text-center lg:order-1 lg:px-0 lg:pl-0 lg:text-left">
+              <div className="relative mx-auto h-64 max-w-xl sm:h-72 lg:mx-0 lg:h-80">
                 {heroSlides.map((slide, index) => {
                   let position = "next";
                   if (index === currentSlide) position = "active";
@@ -233,19 +242,19 @@ export function HomePage() {
 
                   return (
                     <div key={index} className={heroTextClass(position)}>
-                      <p className="text-[12px] uppercase tracking-[0.18em] text-slate-900 sm:text-[15px] lg:text-[20px]">
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#4d5e75] sm:text-[11px] lg:text-[13px]">
                         {slide.subheading}
                       </p>
-                      <h1 className="mt-4 font-body text-[42px] font-medium leading-[1.05] text-black sm:text-[56px] lg:max-w-[520px] lg:text-[72px]">
+                      <h1 className="mt-3 font-body text-4xl font-bold leading-[1.15] text-[#001738] sm:text-5xl lg:max-w-md lg:text-[46px] tracking-tight">
                         {slide.heading}
                       </h1>
-                      <p className="mt-5 text-[20px] text-slate-800 sm:text-[22px] lg:mt-7 lg:text-[25px]">
-                        {slide.price}
+                      <p className="mt-4 text-[14px] font-medium text-[#4d5e75] sm:text-[15px] lg:mt-5 lg:text-[16px]">
+                        Price from : {slide.price}
                       </p>
-                      <div>
+                      <div className="mt-6 lg:mt-8">
                         <Link
                           to={slide.ctaUrl || "/shop"}
-                          className="mt-8 inline-flex rounded-[16px] bg-[#ff7f83] px-8 py-4 text-[16px] font-medium text-white sm:mt-9 sm:px-10 sm:py-5 sm:text-[18px] lg:mt-11 lg:rounded-[18px] lg:px-11 lg:py-6 lg:text-[19px]"
+                          className="inline-flex rounded-xl bg-[#ff9b9d] px-8 py-3.5 text-[14px] font-bold text-white transition-all hover:bg-[#ff7f83] active:scale-95 shadow-lg shadow-[#ff9b9d]/20"
                         >
                           {slide.ctaText || "Shop now"}
                         </Link>
@@ -256,7 +265,7 @@ export function HomePage() {
               </div>
             </div>
             <div className="order-1 flex items-center justify-center pt-4 lg:order-2 lg:justify-end lg:pt-0">
-              <div className="relative h-[260px] w-full max-w-[340px] sm:h-[380px] sm:max-w-[520px] lg:h-[560px] lg:max-w-[760px]">
+              <div className="relative h-64 w-full max-w-sm sm:h-96 sm:max-w-xl lg:h-96 lg:max-w-3xl">
                 {heroSlides.map((slide, index) => {
                   let position = "hidden-right";
                   if (index === currentSlide) position = "center";
@@ -280,7 +289,7 @@ export function HomePage() {
           </div>
         </div>
 
-        <div className="h-[72px] bg-white sm:h-[96px] lg:h-[150px]">
+        <div className="h-16 bg-white sm:h-24 lg:h-36">
           <svg className="block h-full w-full" viewBox="0 0 1887 237" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
             <rect width="1887" height="237" fill="#eae7e0" />
             <polygon
@@ -320,18 +329,18 @@ export function HomePage() {
 
       {/* Categories */}
       <section className="page-shell pt-10 sm:pt-14 lg:pt-20">
-        <h2 className="text-center font-body text-[38px] font-medium leading-none text-black sm:text-[48px] lg:text-[62px]">Shop By Category</h2>
+        <h2 className="text-center font-body text-5xl font-medium leading-none text-black sm:text-5xl lg:text-7xl">Shop By Category</h2>
         <div className="mt-10 flex gap-6 overflow-x-auto pb-4 sm:mt-12 sm:gap-8 lg:grid lg:grid-cols-5 lg:overflow-visible lg:pb-0">
           {categories.slice(0, 5).map((item, i) => {
             const displayName = item.name.toLowerCase() === "stem kit" ? "Star Baby" : item.name;
             return (
-              <Link key={item.id} to={`/shop?category=${item.slug}`} className="min-w-[170px] text-center sm:min-w-[190px] lg:min-w-0">
-                <div className="mx-auto flex h-[148px] w-[148px] items-center justify-center rounded-full border border-dashed border-slate-400 bg-white p-[8px] sm:h-[170px] sm:w-[170px] lg:h-[182px] lg:w-[182px] lg:p-[10px]">
+              <Link key={item.id} to={`/shop?category=${item.slug}`} className="min-w-44 text-center sm:min-w-48 lg:min-w-0">
+                <div className="mx-auto flex h-36 w-36 items-center justify-center rounded-full border border-dashed border-slate-400 bg-white p-2 sm:h-44 sm:w-44 lg:h-44 lg:w-44 lg:p-3">
                   <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full" style={{ backgroundColor: CAT_BG[i % CAT_BG.length] }}>
                     <img className="h-full w-full object-cover" src={item.image || `/cat${(i % 6) + 1}.png`} alt={displayName} />
                   </div>
                 </div>
-                <p className="mt-5 font-body text-[22px] font-medium text-black sm:text-[24px] lg:mt-7 lg:text-[28px]">{displayName}</p>
+                <p className="mt-5 font-body text-2xl font-medium text-black sm:text-2xl lg:mt-7 lg:text-3xl">{displayName}</p>
               </Link>
             )
           })}
@@ -342,12 +351,12 @@ export function HomePage() {
       <section className="page-shell pt-12 sm:pt-16 lg:pt-20">
         <div className="grid gap-5 lg:grid-cols-3">
           {promoCards.map((card) => (
-            <article key={card.title} className="group relative overflow-hidden rounded-[22px] min-h-[200px] sm:min-h-[240px] lg:rounded-[28px]" style={{ background: card.bg }}>
+            <article key={card.title} className="group relative overflow-hidden rounded-[22px] min-h-48 sm:min-h-56 lg:rounded-[28px]" style={{ background: card.bg }}>
               <div className="relative z-10 flex h-full items-center p-6 sm:p-8 lg:p-10">
-                <div className="max-w-[140px] sm:max-w-[180px] lg:max-w-[210px]">
-                  <h3 className="font-body text-[20px] font-bold leading-tight text-black sm:text-[24px] lg:text-[28px]">{card.title}</h3>
-                  <p className="mt-2 text-[13px] text-slate-700 sm:text-[14px] lg:mt-3 lg:text-[15px]">{card.body}</p>
-                  <Link to="/shop" className="mt-5 inline-flex h-10 items-center justify-center rounded-xl bg-[#ff8b87] px-6 text-[13px] font-bold text-white hover:bg-[#ff7777] transition-colors lg:mt-6 lg:h-12 lg:px-8 lg:text-[14px]">
+                <div className="max-w-36 sm:max-w-44 lg:max-w-52">
+                  <h3 className="font-body text-xl font-bold leading-tight text-black sm:text-2xl lg:text-3xl">{card.title}</h3>
+                  <p className="mt-2 text-sm text-slate-700 sm:text-sm lg:mt-3 lg:text-base">{card.body}</p>
+                  <Link to="/shop" className="mt-5 inline-flex h-10 items-center justify-center rounded-xl bg-[#ff8b87] px-6 text-sm font-bold text-white hover:bg-[#ff7777] transition-colors lg:mt-6 lg:h-12 lg:px-8 lg:text-sm">
                     Shop now
                   </Link>
                 </div>
@@ -362,16 +371,16 @@ export function HomePage() {
 
       {/* Age Filter */}
       <section className="page-shell pt-12 sm:pt-16 lg:pt-20">
-        <h2 className="text-center font-body text-[38px] font-medium leading-none text-black sm:text-[48px] lg:text-[62px]">Shop By Age</h2>
-        <div className="mt-10 grid gap-6 sm:mt-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-8">
+        <h2 className="text-center font-body text-4xl font-medium leading-none text-black sm:text-5xl lg:text-7xl">Shop By Age</h2>
+        <div className="mt-10 grid grid-cols-2 gap-4 sm:mt-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-8">
           {ageItems.map((item) => {
             const ageParam = item.title === "0 - 1" ? "0-1 year" : `${item.title.replace(/\s/g, "")} years`;
             return (
               <Link key={item.title} to={`/shop?age=${encodeURIComponent(ageParam)}`} className="group flex justify-center transition-transform duration-300 hover:-translate-y-2">
-              <div className="relative flex h-[126px] w-[220px] items-center justify-center bg-contain bg-center bg-no-repeat transition-transform duration-500 group-hover:scale-110 sm:h-[148px] sm:w-[250px] lg:h-[170px] lg:w-[292px]" style={{ backgroundImage: `url(${item.image})` }}>
+              <div className="relative flex h-24 w-full max-w-[200px] items-center justify-center bg-contain bg-center bg-no-repeat transition-transform duration-500 group-hover:scale-105 sm:h-36 sm:max-w-none sm:w-64 lg:h-44 lg:w-72" style={{ backgroundImage: `url(${item.image})` }}>
                 <div className="text-center transition-opacity group-hover:opacity-90">
-                  <p className="font-body text-[28px] font-bold text-black sm:text-[32px] lg:text-[38px] underline-offset-4 group-hover:underline">{item.title}</p>
-                  <p className="text-[18px] text-slate-800 sm:text-[20px] lg:text-[24px]">{item.subtitle}</p>
+                  <p className="font-body text-xl font-bold text-black sm:text-4xl lg:text-5xl underline-offset-4 group-hover:underline">{item.title}</p>
+                  <p className="text-xs text-slate-800 sm:text-xl lg:text-2xl">{item.subtitle}</p>
                 </div>
               </div>
             </Link>
@@ -380,28 +389,29 @@ export function HomePage() {
         </div>
       </section>
 
+
       {/* Special Offer & Top Picks */}
       {/* Special Offer Section */}
       <section className="page-shell pt-14 sm:pt-18 lg:pt-24">
         <article className="overflow-hidden rounded-[24px] bg-[#eef5fb] lg:rounded-[34px] relative group">
           <div className="px-5 py-12 text-center sm:px-8 lg:px-12 lg:py-20 flex flex-col items-center relative z-10">
-            <h2 className="font-body text-[44px] font-medium text-black sm:text-[52px] lg:text-[72px] leading-[1.1]">
+            <h2 className="font-body text-5xl font-medium text-black sm:text-6xl lg:text-7xl leading-[1.1]">
               {homeSections.specialOfferHeading || "Special Offer"}
             </h2>
-            <p className="mx-auto mt-4 max-w-[600px] text-[16px] text-black/70 sm:text-[18px] lg:text-[22px]">
+            <p className="mx-auto mt-4 max-w-2xl text-base text-black/70 sm:text-lg lg:text-2xl">
               Praesent tristique magna sit amet purus gravida quis blandit.
             </p>
             
             <div className="mt-10 grid grid-cols-4 gap-4 px-4 text-center sm:gap-8 lg:gap-12">
               {[{ label: "Days", value: countdown.days }, { label: "Hrs", value: countdown.hours }, { label: "Mins", value: countdown.minutes }, { label: "Secs", value: countdown.seconds }].map((item, index) => (
                 <div key={item.label} className="relative px-2">
-                  <p className="font-body text-[38px] font-bold leading-none text-brand-coral sm:text-[54px] lg:text-[72px]">{String(item.value).padStart(2, "0")}</p>
-                  <p className="mt-3 text-[12px] font-bold uppercase tracking-widest text-slate-500 sm:text-[14px] lg:text-[16px]">{item.label}</p>
+                  <p className="font-body text-5xl font-bold leading-none text-brand-coral sm:text-6xl lg:text-7xl">{String(item.value).padStart(2, "0")}</p>
+                  <p className="mt-3 text-xs font-bold uppercase tracking-widest text-slate-500 sm:text-sm lg:text-base">{item.label}</p>
                 </div>
               ))}
             </div>
 
-            <Link to="/shop" className="mt-10 inline-flex rounded-[18px] bg-brand-coral px-12 py-5 text-[18px] font-bold text-white shadow-xl shadow-brand-coral/20 hover:scale-105 transition-all">
+            <Link to="/shop" className="mt-10 inline-flex rounded-[18px] bg-brand-coral px-12 py-5 text-lg font-bold text-white shadow-xl shadow-brand-coral/20 hover:scale-105 transition-all">
               Grab Your Discount Now &rarr;
             </Link>
           </div>
@@ -414,9 +424,9 @@ export function HomePage() {
       {/* Top Picks For Youngsters (Full Width for proper card size) */}
       <section className="page-shell pt-14 sm:pt-18 lg:pt-24">
         <div className="text-center mb-12">
-          <h2 className="font-body text-[40px] font-medium leading-[1.1] text-black sm:text-[50px] lg:text-[60px]">{homeSections.topPicksHeading || "Top Picks For Youngsters"}</h2>
+          <h2 className="font-body text-5xl font-medium leading-[1.1] text-black sm:text-6xl lg:text-6xl">{homeSections.topPicksHeading || "Top Picks For Youngsters"}</h2>
           <div className="mt-4 h-1.5 w-24 bg-brand-coral rounded-full mx-auto" />
-          <p className="mt-6 text-[16px] text-slate-500 sm:text-[18px] lg:text-[20px] max-w-2xl mx-auto">
+          <p className="mt-6 text-base text-slate-500 sm:text-lg lg:text-xl max-w-2xl mx-auto">
             Discover our curated collection of best-selling toys loved by parents and kids alike.
           </p>
         </div>
@@ -432,30 +442,30 @@ export function HomePage() {
       <section className="page-shell pt-14 sm:pt-18 lg:pt-24 border-t border-slate-100 mt-10">
 
         <div className="mb-8">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400 mb-2">Toy Collection</p>
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-slate-400 mb-2">Toy Collection</p>
           <div className="flex items-end justify-between gap-4">
-            <h2 className="font-body text-[32px] font-extrabold leading-tight text-brand-ink sm:text-[42px] lg:text-[48px]">{homeSections.newArrivalsHeading || "New Arrivals"}</h2>
-            <Link to="/shop" className="text-[12px] font-bold text-slate-500 border-b-2 border-slate-100 pb-0.5 hover:text-brand-ink hover:border-brand-ink transition-all">
+            <h2 className="font-body text-4xl font-extrabold leading-tight text-brand-ink sm:text-5xl lg:text-5xl">{homeSections.newArrivalsHeading || "New Arrivals"}</h2>
+            <Link to="/shop" className="text-xs font-bold text-slate-500 border-b-2 border-slate-100 pb-0.5 hover:text-brand-ink hover:border-brand-ink transition-all">
               View all &rarr;
             </Link>
           </div>
-          <div className="mt-5 h-[3px] w-12 bg-brand-ink rounded-full" />
+          <div className="mt-5 h-1 w-12 bg-brand-ink rounded-full" />
         </div>
 
         <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2 hide-scrollbar">
           {["All", "Under ₹99", "Under ₹299", "Under ₹499", "Top Rated", "On Sale"].map(f => (
-            <button key={f} onClick={() => setActiveArrivalsFilter(f)} className={`whitespace-nowrap px-5 py-2 rounded-full border-2 text-[12px] font-bold tracking-wide transition-all ${activeArrivalsFilter === f ? "bg-brand-ink border-brand-ink text-white" : "bg-white border-slate-100 text-slate-500 hover:border-slate-300"}`}>
+            <button key={f} onClick={() => setActiveArrivalsFilter(f)} className={`whitespace-nowrap px-5 py-2 rounded-full border-2 text-xs font-bold tracking-wide transition-all ${activeArrivalsFilter === f ? "bg-brand-ink border-brand-ink text-white" : "bg-white border-slate-100 text-slate-500 hover:border-slate-300"}`}>
               {f}
             </button>
           ))}
-          <span className="ml-auto text-[12px] font-medium text-slate-400 hidden sm:block">
+          <span className="ml-auto text-xs font-medium text-slate-400 hidden sm:block">
             {filteredArrivals.length} items
           </span>
         </div>
 
         <div className="flex gap-6 overflow-x-auto pb-10 pt-4 hide-scrollbar snap-x snap-mandatory scroll-smooth px-1">
           {filteredArrivals.map((product, i) => (
-            <div key={product.id} className="snap-start card-in w-[218px] flex-shrink-0" style={{ animationDelay: `${i * 100}ms` }}>
+            <div key={product.id} className="snap-start card-in w-56 flex-shrink-0" style={{ animationDelay: `${i * 100}ms` }}>
               <ProductCard product={product} />
             </div>
           ))}
@@ -467,68 +477,83 @@ export function HomePage() {
       <StoreSeoContent />
 
       {/* News & Brands */}
-      <section className="page-shell py-12 sm:py-14">
-        <div className="mb-10">
-          <h2 className="font-body text-[38px] font-medium leading-none text-black sm:text-[48px] lg:text-[62px]">Latest News</h2>
-          <p className="mt-4 text-[16px] text-slate-500 sm:text-[18px] lg:mt-5 lg:text-[20px]">Erat Velit Scelerisque In Dictum.</p>
+      <section className="page-shell py-14 lg:py-20 border-t border-slate-50 mt-10">
+        <div className="mb-12 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#4d5e75] mb-2">Our Blog</p>
+            <h2 className="font-body text-4xl font-bold leading-tight text-[#001738] sm:text-5xl lg:text-5xl tracking-tight">Latest News</h2>
+            <div className="mt-4 h-1 w-10 bg-brand-coral rounded-full" />
+          </div>
+          <Link to="/about" className="text-[12px] font-black text-[#4d5e75] hover:text-brand-coral transition-colors uppercase tracking-widest border-b-2 border-transparent hover:border-brand-coral pb-1">
+            VIEW ALL STORIES &rarr;
+          </Link>
         </div>
-        <div className="grid gap-10 lg:grid-cols-3">
-          {newsItems.map((item) => (
-            <article key={item.title}>
-              <img className="h-[220px] w-full rounded-[22px] object-cover sm:h-[260px] lg:h-[280px] lg:rounded-[26px]" src={item.image} alt={item.title} />
-              <p className="mt-5 text-[15px] text-slate-500 sm:text-[16px] lg:mt-6 lg:text-[18px]">{item.author} &nbsp; | &nbsp; {item.date}</p>
-              <h3 className="mt-3 font-body text-[28px] font-medium leading-[1.3] text-black sm:text-[30px] lg:mt-4 lg:text-[34px]">{item.title}</h3>
-              <p className="mt-3 max-w-[470px] text-[17px] leading-[1.55] text-black sm:text-[18px] lg:mt-4 lg:text-[20px]">{item.body}</p>
-              <button className="mt-6 rounded-[16px] bg-[#ff7f83] px-8 py-4 text-[16px] font-medium text-white lg:mt-7 lg:rounded-[18px] lg:px-10 lg:py-5 lg:text-[18px]">Read More</button>
+
+        <div className="flex gap-6 overflow-x-auto pb-10 hide-scrollbar snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0">
+          {newsItems.slice(0, 4).map((item, i) => (
+            <article key={item.title} className="snap-start min-w-[280px] lg:min-w-0 group cursor-pointer">
+              <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-5">
+                <img 
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  src={item.image} 
+                  alt={item.title} 
+                />
+                <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors" />
+              </div>
+              <p className="text-[11px] font-bold text-[#4d5e75] uppercase tracking-wider mb-2 opacity-70">
+                {item.author} &nbsp;•&nbsp; {item.date}
+              </p>
+              <h3 className="font-body text-xl font-bold leading-snug text-[#001738] group-hover:text-brand-coral transition-colors line-clamp-2">
+                {item.title}
+              </h3>
+              <p className="mt-3 text-[14px] leading-relaxed text-[#4d5e75] line-clamp-2 italic opacity-80">
+                "{item.body}"
+              </p>
+              <button className="mt-5 text-[12px] font-black text-[#001738] uppercase tracking-widest hover:underline decoration-2 underline-offset-4">
+                Read More
+              </button>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="page-shell pt-10 pb-6">
-        <h2 className="text-center font-body text-[32px] font-medium leading-none text-black sm:text-[40px]">{homeSections.topBrandsHeading || "Top Brands With Us"}</h2>
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-5 lg:mt-8">
-          {brandItems.map((brand) => (
-            <div key={brand.label} className="flex h-[80px] items-center justify-center rounded-2xl border border-slate-200 bg-white sm:h-[100px] lg:h-[120px]">
-              <span className="font-body text-[20px] font-medium sm:text-[24px]" style={{ color: brand.color || "#000" }}>{brand.label}</span>
+      {/* Available On - Consolidated & Redesigned */}
+      <section className="page-shell pt-10 pb-12 border-t border-slate-50 mt-10">
+        <h2 className="text-center font-body text-4xl font-bold leading-tight text-[#001738] sm:text-5xl lg:text-5xl tracking-tight mb-10 underline decoration-brand-coral decoration-4 underline-offset-8">Available On</h2>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 lg:gap-6">
+          {[
+            { name: "Amazon", color: "#ff9900" },
+            { name: "Flipkart", color: "#2874f0" },
+            { name: "Meesho", color: "#f43397" },
+            { name: "Paytm", color: "#00baf2" },
+            { name: "Jio Mart", color: "#004b91" },
+            { name: "Etsy", color: "#f1641e" }
+          ].map((item) => (
+            <div key={item.name} className="flex h-24 items-center justify-center rounded-[20px] border border-[#f1f5f9] bg-white transition-all duration-300 hover:shadow-lg hover:shadow-slate-100 hover:-translate-y-1 sm:h-28 lg:h-32">
+              <span className="font-body text-xl font-black uppercase tracking-wider sm:text-2xl" style={{ color: item.color }}>{item.name}</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Available On */}
-      {availableOn.length > 0 && (
-        <section className="bg-slate-50 py-8">
-          <div className="page-shell">
-            <h2 className="text-center font-body text-[28px] font-medium text-black">We are Available On</h2>
-            <div className="mt-6 flex flex-wrap justify-center gap-6 sm:gap-10 opacity-60 grayscale hover:grayscale-0 transition-all duration-300">
-              {availableOn.map((item) => (
-                <div key={item.name} className="flex h-[40px] w-[100px] items-center justify-center sm:h-[50px] sm:w-[120px]">
-                  <img src={item.logo} alt={item.name} className="max-h-full max-w-full object-contain" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Contact For Bulk Orders */}
       <section className="page-shell py-12 lg:py-16">
         <div className="mx-auto max-w-3xl rounded-3xl bg-white p-8 sm:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
           <div className="text-center mb-8">
-            <h2 className="font-body text-[32px] sm:text-[40px] font-bold text-brand-ink">Contact Us For Bulk Orders</h2>
-            <p className="text-slate-500 mt-2 text-[15px]">Looking to purchase toys for a school, daycare, or retail outlet? Fill out the form below and our wholesale team will get back to you.</p>
+            <h2 className="font-body text-4xl sm:text-5xl font-bold text-brand-ink">Contact Us For Bulk Orders</h2>
+            <p className="text-slate-500 mt-2 text-base">Looking to purchase toys for a school, daycare, or retail outlet? Fill out the form below and our wholesale team will get back to you.</p>
           </div>
           <form className="grid gap-5 sm:grid-cols-2" onSubmit={e => { e.preventDefault(); alert("Bulk inquiry submitted. We will contact you soon!"); }}>
-            <input type="text" placeholder="First Name" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-[14px] outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
-            <input type="text" placeholder="Last Name" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-[14px] outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
-            <input type="email" placeholder="Email Address" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-[14px] outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
-            <input type="tel" placeholder="Phone Number" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-[14px] outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
+            <input type="text" placeholder="First Name" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-sm outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
+            <input type="text" placeholder="Last Name" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-sm outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
+            <input type="email" placeholder="Email Address" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-sm outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
+            <input type="tel" placeholder="Phone Number" className="w-full rounded-xl border border-slate-200 px-5 py-3 text-sm outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required />
             <div className="sm:col-span-2">
-              <textarea placeholder="Tell us about your requirements (items, estimated quantity, timeline)" rows="4" className="w-full rounded-xl border border-slate-200 px-5 py-4 text-[14px] outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required></textarea>
+              <textarea placeholder="Tell us about your requirements (items, estimated quantity, timeline)" rows="4" className="w-full rounded-xl border border-slate-200 px-5 py-4 text-sm outline-none focus:border-brand-coral focus:ring-1 focus:ring-brand-coral/50" required></textarea>
             </div>
             <div className="sm:col-span-2 mt-2">
-              <button type="submit" className="w-full rounded-xl bg-brand-ink py-4 font-bold text-white transition-colors hover:bg-black text-[15px]">Submit Inquiry</button>
+              <button type="submit" className="w-full rounded-xl bg-brand-ink py-4 font-bold text-white transition-colors hover:bg-black text-base">Submit Inquiry</button>
             </div>
           </form>
         </div>
@@ -540,11 +565,11 @@ export function HomePage() {
           <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-brand-coral/20 blur-3xl mix-blend-screen"></div>
           
           <div className="relative z-10 max-w-md text-center md:text-left">
-            <span className="inline-block px-3 py-1 mb-4 text-[11px] font-bold tracking-widest text-white uppercase bg-white/10 rounded-full border border-white/20">Coming Soon</span>
-            <h2 className="font-display text-[28px] leading-tight font-medium text-white sm:text-[34px]">
+            <span className="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-widest text-white uppercase bg-white/10 rounded-full border border-white/20">Coming Soon</span>
+            <h2 className="font-display text-3xl leading-tight font-medium text-white sm:text-4xl">
               The entirely new Kuddoland mobile experience.
             </h2>
-            <p className="mt-4 text-[14px] text-slate-300 leading-relaxed">
+            <p className="mt-4 text-sm text-slate-300 leading-relaxed">
               Premium shopping, exclusive app drops, and lightning-fast checkout. Arriving on iOS and Android this fall.
             </p>
           </div>

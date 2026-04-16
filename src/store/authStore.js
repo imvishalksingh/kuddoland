@@ -4,6 +4,9 @@ export const useAuthStore = create((set) => ({
   user: JSON.parse(window.localStorage.getItem("kuddosland-user") || "null"),
   accessToken: window.localStorage.getItem("kuddosland-access-token"),
   csrfToken: window.localStorage.getItem("kuddosland-csrf-token"),
+  isAuthModalOpen: false,
+  openAuthModal: () => set({ isAuthModalOpen: true }),
+  closeAuthModal: () => set({ isAuthModalOpen: false }),
   setUser: (user) =>
     set(() => {
       window.localStorage.setItem("kuddosland-user", JSON.stringify(user));

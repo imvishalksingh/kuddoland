@@ -10,9 +10,8 @@ import { ProductDetailPage } from "../pages/ProductDetailPage";
 import { CartPage } from "../pages/CartPage";
 import { CheckoutPage } from "../pages/CheckoutPage";
 import { SearchPage } from "../pages/SearchPage";
-import { LoginPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, VerifyEmailPage } from "../pages/auth/AuthPages";
+import { ForgotPasswordPage, ResetPasswordPage, VerifyEmailPage } from "../pages/auth/AuthPages";
 import { OrderConfirmationPage } from "../pages/OrderConfirmationPage";
-import { PaymentPage } from "../pages/PaymentPage";
 import { TrackOrderPage } from "../pages/TrackOrderPage";
 import { AboutPage, ContactPage, FaqPage, TermsPrivacyPage } from "../pages/UtilityPages";
 import { NotFoundPage } from "../pages/NotFoundPage";
@@ -32,11 +31,8 @@ export const router = createBrowserRouter([
       { path: "search", element: <SearchPage /> },
       { path: "cart", element: <CartPage /> },
       { path: "checkout", element: <CheckoutPage /> },
-      { path: "payment", element: <PaymentPage /> },
       { path: "order-confirmation/:orderId", element: <OrderConfirmationPage /> },
       { path: "track/:orderId", element: <TrackOrderPage /> },
-      { path: "login", element: <LoginPage /> },
-      { path: "register", element: <RegisterPage /> },
       { path: "forgot-password", element: <ForgotPasswordPage /> },
       { path: "reset-password/:token", element: <ResetPasswordPage /> },
       { path: "verify-email/:token?", element: <VerifyEmailPage /> },

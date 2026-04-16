@@ -25,93 +25,91 @@ const Input = (props) => (
 
 export function AccountPage() {
   const { data } = useQuery({ queryKey: ["profile"], queryFn: getProfile });
-  const navigate = useNavigate();
-  const logout = useAuthStore((state) => state.logout);
-  const [form, setForm] = useState({ name: data?.user?.name || "", phone: data?.user?.phone || "" });
+  const [form, setForm] = useState({ name: data?.user?.name || "", phone: data?.user?.phone || "", address: "" });
 
   useEffect(() => {
     if (data?.user) {
-      setForm({ name: data.user.name || "", phone: data.user.phone || "" });
+      setForm({ name: data.user.name || "", phone: data.user.phone || "", address: "Lucknow" }); // Mock address for UI mapping
     }
   }, [data]);
 
   return (
     <section className="space-y-6">
-      <div className="mb-2">
-        <h1 className="font-display text-4xl font-extrabold text-brand-ink">Profile Settings</h1>
-        <p className="text-slate-500 font-body text-sm mt-1">Update your personal information and contact details.</p>
-      </div>
-
-      {!data?.user?.isVerified && (
-        <Card className="border-amber-200 bg-amber-50">
-          <div className="flex items-start gap-4">
-            <span className="text-2xl">⚠️</span>
+      <Card className="space-y-6 p-8 rounded-2xl shadow-sm border border-slate-200 bg-white">
+        <h2 className="font-sans text-[22px] font-bold text-[#001738]">Information</h2>
+        
+        {/* Profile Picture Block */}
+        <div className="grid gap-2">
+          <label className="block text-[14px] text-[#4d5e75]">Profile Picture:</label>
+          <div className="flex items-center gap-6 mt-1">
+            <img src={data?.user?.avatar || "/cat1.png"} alt="Profile preview" className="w-[84px] h-[84px] rounded-lg object-cover border border-slate-200" />
             <div>
-              <p className="font-bold text-brand-ink text-lg">Verify your email address</p>
-              <p className="text-slate-600 font-body mt-1">Please verify your email to unlock checkout and reviews.</p>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <button
-                  className="rounded-full bg-brand-coral px-5 py-2 text-sm font-bold text-white transition-colors hover:bg-opacity-90"
-                  onClick={async () => {
-                    try {
-                      await ensureCsrfToken();
-                      const response = await resendVerification();
-                      toast.success(response.verificationTokenPreview ? `Dev verify token: ${response.verificationTokenPreview}` : "Verification email resent");
-                    } catch (error) {
-                      toast.error(error.response?.data?.message || "Resend failed");
-                    }
-                  }}
-                >
-                  Resend Email
+              <p className="font-semibold text-sm mb-2 text-[#001738]">Upload File:</p>
+              <div className="flex items-center gap-4">
+                <button className="bg-white hover:bg-slate-50 active:bg-slate-100 transition-all text-[#001738] text-[13px] font-bold px-5 py-2.5 rounded-lg border border-slate-300 shadow-sm cursor-pointer whitespace-nowrap">
+                  CHOOSE FILE
                 </button>
-                <Link className="rounded-full border-2 border-brand-peach px-5 py-2 text-sm font-bold text-brand-ink transition-colors hover:bg-brand-peach" to="/verify-email">
-                  Enter Token
-                </Link>
+                <span className="text-[13px] text-[#8e9aab]">No file chosen</span>
               </div>
-            </div>
-          </div>
-        </Card>
-      )}
-
-      <Card className="space-y-6">
-        <h2 className="font-display text-2xl font-bold text-brand-ink">Personal Information</h2>
-        <div className="grid gap-5 md:grid-cols-2">
-          <div>
-            <label className="block text-sm font-bold text-slate-500 mb-2 pl-1">Full Name</label>
-            <Input value={form.name} placeholder={data?.user?.name || "Full name"} onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))} />
-          </div>
-          <div>
-            <label className="block text-sm font-bold text-slate-500 mb-2 pl-1">Phone Number</label>
-            <Input value={form.phone} placeholder={data?.user?.phone || "Phone"} onChange={(event) => setForm((current) => ({ ...current, phone: event.target.value }))} />
-          </div>
-          <div>
-            <label className="block text-sm font-bold text-slate-500 mb-2 pl-1">Email Address</label>
-            <div className="w-full rounded-2xl border-2 border-slate-100 bg-slate-100 px-5 py-3 font-body text-slate-500 cursor-not-allowed">
-              {data?.user?.email || "Email"}
             </div>
           </div>
         </div>
 
-        <div className="pt-4 flex items-center justify-between border-t border-slate-100">
-          <button className="rounded-full bg-brand-coral px-8 py-3 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-1 hover:shadow-lg" onClick={() => updateProfile(form)}>
-            Save Changes
-          </button>
+        <div className="grid gap-6 mt-4">
+          <div>
+            <label className="block text-[14px] font-bold text-[#4d5e75] mb-2 uppercase tracking-tight">Account ID</label>
+            <div className="w-full rounded-md bg-slate-50 border border-slate-200 px-4 py-3.5 text-[14px] text-[#4d5e75] cursor-not-allowed font-semibold">
+              KDL-USR-2026
+            </div>
+          </div>
 
-          <button
-            className="rounded-full border-2 border-red-100 bg-red-50 px-6 py-3 text-sm font-bold text-red-500 transition-colors hover:bg-red-100"
-            onClick={async () => {
-              try {
-                await ensureCsrfToken();
-                await logoutAllSessionsRequest();
-                logout();
-                toast.success("Logged out successfully");
-                navigate("/login");
-              } catch (error) {
-                toast.error(error.response?.data?.message || "Logout failed");
-              }
-            }}
+          <div>
+            <label className="block text-[14px] font-bold text-[#4d5e75] mb-2 uppercase tracking-tight">Full Name</label>
+            <input 
+              className="w-full rounded-md border border-slate-300 bg-white px-4 py-3.5 text-[14px] font-semibold text-[#001738] transition-all focus:border-black focus:ring-0 focus:outline-none placeholder:text-slate-300"
+              value={form.name} 
+              placeholder="Your full name"
+              onChange={(e) => setForm((c) => ({ ...c, name: e.target.value }))} 
+            />
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <label className="block text-[14px] font-bold text-[#4d5e75] mb-2 uppercase tracking-tight">Phone Number</label>
+              <input 
+                className="w-full rounded-md border border-slate-300 bg-slate-50/50 px-4 py-3.5 text-[14px] font-semibold text-[#8e9aab] transition-all focus:outline-none cursor-default"
+                value={form.phone} 
+                readOnly
+              />
+              <p className="text-[11px] text-[#8e9aab] mt-2 font-medium">Contact support to change your verified number</p>
+            </div>
+            <div>
+              <label className="block text-[14px] font-bold text-[#4d5e75] mb-2 uppercase tracking-tight">Email Address</label>
+              <input 
+                className="w-full rounded-md border border-slate-300 bg-white px-4 py-3.5 text-[14px] text-[#001738] font-semibold transition-all focus:border-black focus:ring-0 focus:outline-none"
+                value={data?.user?.email || ""} 
+                readOnly
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[14px] font-bold text-[#4d5e75] mb-2 uppercase tracking-tight">Primary Address</label>
+            <textarea 
+              className="w-full min-h-[120px] rounded-md border border-slate-300 bg-white p-4 text-[14px] text-[#001738] font-semibold transition-all focus:border-black focus:ring-0 focus:outline-none resize-none placeholder:text-slate-300"
+              value={form.address} 
+              placeholder="Enter your complete address..."
+              onChange={(e) => setForm((c) => ({ ...c, address: e.target.value }))} 
+            />
+          </div>
+        </div>
+
+        <div className="pt-6 border-t border-slate-100">
+          <button 
+            className="rounded-lg bg-black px-10 py-4 text-[14px] font-black tracking-widest text-white transition-all hover:bg-slate-800 active:scale-[0.98] shadow-lg shadow-black/10 active:shadow-inner" 
+            onClick={() => updateProfile(form)}
           >
-            Logout
+            SAVE CHANGES
           </button>
         </div>
       </Card>
@@ -126,43 +124,56 @@ export function AccountOrdersPage() {
   if (!items.length) {
     return (
       <DashboardPlaceholder
-        eyebrow="Orders"
+        eyebrow="My Account"
         title="No orders yet"
-        description="Place an order from checkout and it will appear here."
+        description="Place your first order to see it appear in your history."
         highlights={[
-          { label: "History", title: "Your order timeline", body: "Each placed order will show status, totals, shipment, and payment summary here." },
-          { label: "Tracking", title: "Real order IDs", body: "Once shipments are assigned, you can jump into tracking from this area." },
+          { label: "Timeline", title: "Real-time updates", body: "Follow your order from placement to doorstep with live status tracking." },
+          { label: "Assistance", title: "Easy returns", body: "Manage exchanges and returns directly from your order detail page." },
         ]}
       />
     );
   }
 
   return (
-    <section className="space-y-6">
-      <div className="mb-2">
-        <h1 className="font-display text-4xl font-extrabold text-brand-ink">Order History</h1>
-        <p className="text-slate-500 font-body text-sm mt-1">Track and manage your recent purchases.</p>
+    <section className="space-y-8">
+      <div>
+        <h1 className="font-sans text-3xl font-black text-[#001738] tracking-tight">Order History</h1>
+        <p className="text-[#4d5e75] text-[15px] mt-1 font-medium">Review and track your recent purchases.</p>
       </div>
-      <div className="space-y-5">
+      
+      <div className="space-y-4">
         {items.map((order) => (
-          <Card key={order.id} className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between hover:border-brand-coral transition-colors">
-            <div>
-              <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Order #{order.id}</p>
-              <div className="flex items-center gap-3">
-                <span className={`px-3 py-1 text-xs font-bold rounded-full ${order.status === 'DELIVERED' ? 'bg-brand-mint text-brand-ink' : 'bg-orange-100 text-orange-600'}`}>
-                  {order.status}
-                </span>
-                <span className="text-slate-500 font-body">{new Date(order.createdAt).toLocaleDateString()}</span>
+          <Card key={order.id} className="group p-6 rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:border-slate-300 transition-all">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                   <p className="text-[11px] font-black text-[#4d5e75] uppercase tracking-widest">#{order.id}</p>
+                   <span className="px-2 py-0.5 text-[10px] font-black uppercase rounded bg-[#001738]/5 text-[#001738] tracking-wider">
+                     {order.status}
+                   </span>
+                </div>
+                <div className="flex items-center gap-6">
+                  <div>
+                    <p className="text-[12px] text-[#4d5e75] font-bold uppercase tracking-tight">Purchased on</p>
+                    <p className="font-bold text-[#001738] text-[15px]">{new Date(order.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  <div className="w-px h-8 bg-slate-100 hidden sm:block"></div>
+                  <div>
+                    <p className="text-[12px] text-[#4d5e75] font-bold uppercase tracking-tight">Total Amount</p>
+                    <p className="font-black text-[#001738] text-[15px]">₹{order.total}</p>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-6 justify-between md:justify-end border-t border-slate-100 md:border-0 pt-4 md:pt-0">
-              <div className="text-right">
-                <p className="text-sm text-slate-500 font-body">Total</p>
-                <p className="font-display text-xl font-bold text-brand-ink">₹{order.total}</p>
+
+              <div className="flex items-center gap-4">
+                <Link 
+                  className="inline-flex items-center justify-center bg-black hover:bg-slate-800 text-white text-[12px] font-black tracking-widest px-8 py-3 rounded-lg transition-all active:scale-[0.98] shadow-lg shadow-black/5" 
+                  to={`/account/orders/${order.id}`}
+                >
+                  VIEW DETAILS
+                </Link>
               </div>
-              <Link className="rounded-full bg-brand-peach px-6 py-2.5 text-sm font-bold text-brand-coral transition-colors hover:bg-brand-coral hover:text-white" to={`/account/orders/${order.id}`}>
-                View Details
-              </Link>
             </div>
           </Card>
         ))}
@@ -177,6 +188,7 @@ export function AccountOrderDetailPage() {
   const [reason, setReason] = useState("");
   const [details, setDetails] = useState("");
   const { data } = useQuery({ queryKey: ["account-order", params.id], queryFn: () => getOrder(params.id) });
+  
   const mutation = useMutation({
     mutationFn: (payload) => requestReturn(params.id, payload),
     onSuccess: () => {
@@ -193,102 +205,163 @@ export function AccountOrderDetailPage() {
   if (!item) {
     return (
       <section className="space-y-6">
-        <Card>
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-slate-100 rounded w-1/3"></div>
-            <div className="h-4 bg-slate-100 rounded w-1/2"></div>
-            <div className="h-4 bg-slate-100 rounded w-1/4"></div>
-          </div>
+        <Card className="animate-pulse p-8">
+          <div className="h-8 bg-slate-100 rounded w-1/3 mb-4"></div>
+          <div className="h-4 bg-slate-100 rounded w-1/2 mb-2"></div>
+          <div className="h-4 bg-slate-100 rounded w-1/4"></div>
         </Card>
       </section>
     );
   }
 
   return (
-    <section className="space-y-6">
-      <div className="flex items-center justify-between gap-4">
+    <section className="space-y-8">
+      {/* Header Area */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-4xl font-extrabold text-brand-ink">Order Details</h1>
-          <Link to="/account/orders" className="text-brand-coral text-sm font-bold hover:underline lg:hidden mt-2 inline-block">← Back to orders</Link>
+          <h1 className="font-sans text-3xl font-black text-[#001738] tracking-tight">Order Details</h1>
+          <p className="text-[#4d5e75] text-[15px] mt-1 font-medium italic">#{item.id}</p>
         </div>
-        <Link to="/account/orders" className="rounded-full bg-brand-peach px-6 py-2.5 text-sm font-bold text-brand-coral transition-all hover:bg-brand-coral hover:text-white hidden lg:flex items-center gap-2">
-          <span>←</span> Back to orders
+        <Link 
+          to="/account/orders" 
+          className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 border border-slate-300 px-5 py-2.5 rounded-lg text-[13px] font-bold text-[#001738] shadow-sm transition-all active:scale-[0.98]"
+        >
+          <span className="text-base">←</span> BACK TO ORDERS
         </Link>
       </div>
 
-      <Card className="space-y-6 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-2 h-full bg-brand-coral"></div>
-        <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-6 gap-4">
+      {/* Overview Card */}
+      <Card className="p-8 rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Order Reference</p>
-            <p className="font-display text-2xl font-bold text-brand-ink">#{item.id}</p>
-          </div>
-          <div className="flex gap-4">
-            <div className="text-right">
-              <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Status</p>
-              <span className="px-3 py-1 text-xs font-bold rounded-full bg-orange-100 text-orange-600 inline-block">{item.status}</span>
-            </div>
-            <div className="text-right">
-              <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Order Total</p>
-              <p className="font-display text-xl font-bold text-brand-ink">₹{item.total}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 text-sm text-slate-600 font-body">
-          <div>
-            <p className="font-bold text-brand-ink mb-2">Order Summary</p>
-            <div className="space-y-1">
-              <p>Placed: {new Date(item.createdAt).toLocaleString()}</p>
-              <p>Shipment: {item.shipment?.status || "Processing"}</p>
-              <p>Payment: {item.payment?.status || "Pending"}</p>
-            </div>
-          </div>
-          {item.returnReason && (
-            <div>
-              <p className="font-bold text-brand-ink mb-2">Return Information</p>
-              <div className="space-y-1">
-                <p>Reason: {item.returnReason}</p>
-                <p>Status: {item.returnDecisionNote || "Pending Review"}</p>
+            <p className="text-[12px] font-black text-[#4d5e75] uppercase tracking-widest mb-3">Order Information</p>
+            <div className="space-y-2">
+              <div className="flex justify-between text-[14px]">
+                <span className="text-[#4d5e75]">Placed:</span>
+                <span className="font-bold text-[#001738]">{new Date(item.createdAt).toLocaleDateString()}</span>
+              </div>
+              <div className="flex justify-between text-[14px]">
+                <span className="text-[#4d5e75]">Total:</span>
+                <span className="font-black text-[#001738]">₹{item.total}</span>
               </div>
             </div>
-          )}
+          </div>
+
+          <div>
+            <p className="text-[12px] font-black text-[#4d5e75] uppercase tracking-widest mb-3">Status Tracking</p>
+            <div className="space-y-2">
+              <div className="flex justify-between text-[14px]">
+                <span className="text-[#4d5e75]">Order Status:</span>
+                <span className="px-2.5 py-1 text-[11px] font-black uppercase rounded bg-slate-100 text-[#001738] tracking-wider">
+                  {item.status}
+                </span>
+              </div>
+              <div className="flex justify-between text-[14px]">
+                <span className="text-[#4d5e75]">Payment:</span>
+                <span className="font-bold text-[#001738]">{item.payment?.status || "Pending"}</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[12px] font-black text-[#4d5e75] uppercase tracking-widest mb-3">Shipment</p>
+            <div className="space-y-2">
+              <div className="flex justify-between text-[14px]">
+                <span className="text-[#4d5e75]">Provider:</span>
+                <span className="font-bold text-[#001738]">{item.shipment?.courier || "FShip Express"}</span>
+              </div>
+              <div className="flex justify-between text-[14px]">
+                <span className="text-[#4d5e75]">Tracking:</span>
+                <span className="font-bold text-[#001738] italic">{item.shipment?.awb || "Processing"}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </Card>
 
-      <Card className="space-y-4">
-        <h2 className="font-display text-2xl font-bold text-brand-ink mb-4">Items</h2>
-        <div className="divide-y divide-slate-100">
+      {/* Items List */}
+      <Card className="p-8 rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <h2 className="text-[12px] font-black text-[#4d5e75] uppercase tracking-widest mb-6">Line Items</h2>
+        <div className="divide-y divide-slate-100 -mx-8 sm:mx-0 font-sans">
           {item.items.map((orderItem) => (
-            <div key={orderItem.id} className="py-4 flex items-center justify-between first:pt-0 last:pb-0">
-              <div className="flex items-center gap-4">
-                <div className="h-16 w-16 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center text-2xl">🧸</div>
+            <div key={orderItem.id} className="py-6 flex items-center justify-between px-8 sm:px-0 first:pt-0 last:pb-0">
+              <div className="flex items-center gap-6">
+                <div className="relative h-20 w-20 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-center p-2 overflow-hidden shadow-inner">
+                  <img 
+                    src={orderItem.productSnapshot?.image || "/cat1.png"} 
+                    alt={orderItem.productSnapshot?.name} 
+                    className="h-full w-full object-contain mix-blend-multiply transition-transform hover:scale-110" 
+                  />
+                  <span className="absolute -top-2 -right-2 bg-[#001738] text-white text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center shadow-md">
+                    {orderItem.quantity}
+                  </span>
+                </div>
                 <div>
-                  <p className="font-bold text-brand-ink text-lg">{orderItem.productSnapshot?.name || "Product"}</p>
-                  <p className="text-sm text-slate-500 font-body">Qty: {orderItem.quantity}</p>
+                  <p className="font-bold text-[#001738] text-lg leading-tight uppercase tracking-tight">
+                    {orderItem.productSnapshot?.name || "Product Item"}
+                  </p>
+                  <p className="text-[13px] text-[#4d5e75] mt-1 font-medium">SKU: {orderItem.productSnapshot?.sku || "KDL-DEMO"}</p>
                 </div>
               </div>
-              <p className="font-bold text-brand-ink text-lg">₹{orderItem.price}</p>
+              <div className="text-right">
+                 <p className="font-black text-[#001738] text-[17px]">₹{orderItem.price}</p>
+                 <p className="text-[11px] text-[#4d5e75] font-bold uppercase mt-1 tracking-wider opacity-60">Price per unit</p>
+              </div>
             </div>
           ))}
         </div>
       </Card>
 
+      {/* Return Section - Updated to Professional Styling */}
       {item.status !== "RETURN_REQUESTED" && item.status !== "REFUNDED" && item.status !== "CANCELLED" && (
-        <Card className="space-y-4 bg-orange-50/50">
-          <h2 className="font-display text-2xl font-bold text-brand-ink">Need to return?</h2>
-          <p className="text-slate-600 font-body text-sm mb-4">If you are not satisfied with your order, you can request a return within 7 days of delivery.</p>
-          <div className="space-y-3">
-            <Input placeholder="Reason for return (e.g., Damaged item, Wrong size)" value={reason} onChange={(event) => setReason(event.target.value)} />
-            <textarea className="min-h-24 w-full rounded-2xl border-2 border-slate-100 bg-white px-5 py-3 font-body text-slate-700 focus:border-brand-coral focus:outline-none placeholder:text-slate-400 resize-none" placeholder="Provide additional details..." value={details} onChange={(event) => setDetails(event.target.value)} />
-            <div className="pt-2">
+        <Card className="p-8 rounded-2xl border border-slate-200 bg-[#f9fafb] shadow-sm">
+          <h2 className="font-sans text-[20px] font-black text-[#001738] mb-2 uppercase tracking-tight text-center sm:text-left">Returns & Exchanges</h2>
+          <p className="text-[#4d5e75] text-[14px] font-medium mb-8 text-center sm:text-left">Not satisfied? Request a return within 7 days of delivery.</p>
+          
+          <div className="max-w-xl space-y-5 mx-auto sm:mx-0">
+            <div>
+              <label className="block text-[11px] font-black text-[#4d5e75] mb-2 uppercase tracking-widest pl-1">Reason for return</label>
+              <input 
+                className="w-full rounded-lg border border-slate-300 bg-white px-5 py-4 text-[14px] font-semibold text-[#001738] transition-all focus:border-black focus:outline-none placeholder:text-slate-300 shadow-sm"
+                placeholder="e.g. Damaged item, Wrong size..." 
+                value={reason} 
+                onChange={(e) => setReason(e.target.value)} 
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-black text-[#4d5e75] mb-2 uppercase tracking-widest pl-1">Additional details</label>
+              <textarea 
+                className="min-h-[140px] w-full rounded-lg border border-slate-300 bg-white px-5 py-4 text-[14px] font-semibold text-[#001738] focus:border-black focus:outline-none placeholder:text-slate-300 resize-none shadow-sm"
+                placeholder="Describe your issue in detail..." 
+                value={details} 
+                onChange={(e) => setDetails(e.target.value)} 
+              />
+            </div>
+            <div className="pt-4 flex justify-center sm:justify-start">
               <button
-                className="rounded-full bg-slate-800 px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-1 hover:bg-black disabled:opacity-50 disabled:hover:translate-y-0"
+                className="rounded-lg bg-black px-12 py-4 text-[14px] font-black tracking-[0.2em] text-white shadow-xl shadow-black/10 transition-all hover:bg-slate-800 active:scale-[0.98] disabled:opacity-30"
                 onClick={() => mutation.mutate({ reason, details })}
                 disabled={!reason.trim()}
               >
-                Submit Return Request
+                SUBMIT RETURN
               </button>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Return Information (If already requested) */}
+      {item.returnReason && (
+        <Card className="p-8 rounded-2xl border border-amber-200 bg-amber-50/30">
+          <h2 className="font-sans text-[18px] font-black text-amber-900 mb-4 uppercase tracking-tight">Return Request Status</h2>
+          <div className="grid gap-6 sm:grid-cols-2 text-[14px] font-medium text-amber-900/80">
+            <div>
+              <p className="font-black text-amber-900 uppercase text-[11px] tracking-widest mb-1">Reason provided</p>
+              <p className="italic underline underline-offset-4 decoration-amber-200">{item.returnReason}</p>
+            </div>
+            <div>
+              <p className="font-black text-amber-900 uppercase text-[11px] tracking-widest mb-1">Admin Resolution</p>
+              <p>{item.returnDecisionNote || "Our team is reviewing your request. Expect an update within 48 hours."}</p>
             </div>
           </div>
         </Card>
@@ -302,38 +375,46 @@ export function AccountAddressesPage() {
   const items = data?.items || [];
 
   return (
-    <section className="space-y-6">
-      <div className="flex items-center justify-between gap-4 mb-2">
+    <section className="space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-4xl font-extrabold text-brand-ink">Saved Addresses</h1>
-          <p className="text-slate-500 font-body text-sm mt-1">Manage your delivery locations.</p>
+          <h1 className="font-sans text-3xl font-black text-[#001738] tracking-tight">Saved Addresses</h1>
+          <p className="text-[#4d5e75] text-[15px] mt-1 font-medium">Manage your delivery locations for faster checkout.</p>
         </div>
-        <button className="rounded-full bg-brand-ink px-6 py-3 text-sm font-bold text-white shadow-lg transition-all hover:bg-black hover:-translate-y-0.5">+ Add New</button>
+        <button className="bg-black hover:bg-slate-800 text-white text-[12px] font-black tracking-widest px-8 py-3.5 rounded-lg active:scale-[0.98] shadow-lg shadow-black/5 transition-all">
+          ADD NEW ADDRESS
+        </button>
       </div>
 
       {items.length === 0 ? (
-        <Card className="text-center py-12">
-          <p className="text-xl text-slate-500 font-body mb-4">You haven&apos;t saved any addresses yet.</p>
-          <button className="rounded-full bg-brand-peach px-6 py-3 font-bold text-brand-coral transition-colors hover:bg-brand-coral hover:text-white">Add Delivery Address</button>
+        <Card className="text-center py-20 border-slate-200 border bg-white rounded-2xl">
+          <p className="text-xl text-[#001738] font-bold mb-4">You haven&apos;t saved any addresses yet.</p>
+          <button className="bg-black hover:bg-slate-800 text-white text-[12px] font-black tracking-widest px-8 py-3.5 rounded-lg transition-all">
+            CREATE FIRST ADDRESS
+          </button>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {items.map((address) => (
-            <Card key={address.id} className="relative group hover:border-brand-coral transition-colors">
-              {address.isDefault && (
-                <span className="absolute top-6 right-6 px-3 py-1 bg-brand-mint text-brand-ink text-xs font-bold rounded-full">Default</span>
-              )}
-              <h3 className="font-bold text-brand-ink text-lg pr-20">{address.name}</h3>
-              <div className="mt-3 text-sm text-slate-600 font-body leading-relaxed">
-                <p>{address.line1}</p>
-                {address.line2 && <p>{address.line2}</p>}
-                <p>{address.city}, {address.state} - {address.pincode}</p>
-                <p className="mt-2 text-slate-500">📞 {address.phone || "No phone added"}</p>
+            <Card key={address.id} className="relative p-8 rounded-2xl border border-slate-200 bg-white shadow-sm hover:border-slate-300 transition-all flex flex-col justify-between">
+              <div>
+                {address.isDefault && (
+                  <span className="absolute top-6 right-6 px-2.5 py-1 bg-[#001738] text-white text-[9px] font-black uppercase tracking-widest rounded shadow-sm">Default</span>
+                )}
+                <h3 className="font-black text-[#001738] text-[16px] uppercase tracking-tight pr-20">{address.name}</h3>
+                <div className="mt-4 text-[14px] text-[#4d5e75] font-medium leading-relaxed">
+                  <p>{address.line1}</p>
+                  {address.line2 && <p>{address.line2}</p>}
+                  <p className="font-bold text-[#001738] mt-1">{address.city}, {address.state} - {address.pincode}</p>
+                  <p className="mt-4 flex items-center gap-2 opacity-70">
+                    <span className="text-[11px] font-black uppercase tracking-wider">Phone:</span> {address.phone || "N/A"}
+                  </p>
+                </div>
               </div>
-              <div className="mt-6 flex gap-3">
-                <button className="text-sm font-bold text-brand-coral hover:underline">Edit</button>
-                <div className="w-px h-4 bg-slate-200 self-center"></div>
-                <button className="text-sm font-bold text-slate-400 hover:text-red-500 hover:underline">Delete</button>
+              <div className="mt-8 pt-6 border-t border-slate-50 flex gap-4">
+                <button className="text-[12px] font-black text-[#001738] hover:underline tracking-widest uppercase">Edit</button>
+                <div className="w-px h-3 bg-slate-200 self-center"></div>
+                <button className="text-[12px] font-black text-red-500 hover:underline tracking-widest uppercase">Delete</button>
               </div>
             </Card>
           ))}
@@ -349,25 +430,28 @@ export function WishlistPage() {
   const items = data?.items || [];
 
   return (
-    <section className="space-y-6">
-      <div className="mb-2">
-        <h1 className="font-display text-4xl font-extrabold text-brand-ink">My Wishlist</h1>
-        <p className="text-slate-500 font-body text-sm mt-1">Your saved toys and future playmates.</p>
+    <section className="space-y-8">
+      <div>
+        <h1 className="font-sans text-3xl font-black text-[#001738] tracking-tight">My Wishlist</h1>
+        <p className="text-[#4d5e75] text-[15px] mt-1 font-medium">Items you've saved for later play sessions.</p>
       </div>
 
       {!items.length ? (
-        <Card className="text-center py-16 border-dashed border-2 bg-orange-50/50">
-          <div className="text-6xl mb-4 opacity-50">✨</div>
-          <p className="text-xl text-brand-ink font-bold mb-2">Your wishlist is empty</p>
-          <p className="text-slate-500 font-body mb-6">Save the toys your little ones love and they will show up here.</p>
-          <Link className="inline-block rounded-full bg-brand-coral px-8 py-3.5 text-sm font-bold text-white shadow-md transition-all hover:shadow-lg hover:-translate-y-1" to="/shop">
-            Explore Toys
+        <Card className="text-center py-20 border-slate-200 border-2 border-dashed bg-slate-50/50 rounded-2xl">
+          <div className="text-5xl mb-6 opacity-40">✨</div>
+          <p className="text-xl text-[#001738] font-black mb-2 tracking-tight">Your wishlist is currently empty</p>
+          <p className="text-[#4d5e75] text-[15px] mb-8 font-medium italic">Save your favorite toys here to find them faster!</p>
+          <Link 
+            className="inline-flex items-center justify-center bg-black hover:bg-slate-800 text-white text-[12px] font-black tracking-widest px-10 py-4 rounded-lg transition-all shadow-lg shadow-black/10" 
+            to="/shop"
+          >
+            CONTINUE SHOPPING
           </Link>
         </Card>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
-            <div key={item.id} className="fade-up">
+            <div key={item.id} className="fade-up transition-transform hover:-translate-y-1">
               <ProductCard product={item} />
             </div>
           ))}

@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProductCard } from "../components/shop/ProductCard";
 import { Seo } from "../components/ui/Seo";
@@ -51,7 +51,7 @@ const Accordion = ({ title, children }) => {
   return (
     <div className="border-b border-dashed border-slate-200 last:border-b-0">
       <button
-        className="w-full flex items-center justify-between py-4 bg-white text-left text-[15px] font-semibold text-brand-ink hover:text-[#ff8b87] transition-colors"
+        className="w-full flex items-center justify-between py-4 bg-white text-left text-base font-semibold text-slate-900 hover:text-[#ff8b87] transition-colors"
         onClick={() => setOpen(!open)}
       >
         {title}
@@ -62,20 +62,12 @@ const Accordion = ({ title, children }) => {
         </span>
       </button>
       {open && (
-        <div className="pb-4 text-[13px] leading-relaxed text-slate-500">{children}</div>
+        <div className="pb-4 text-sm leading-relaxed text-slate-500">{children}</div>
       )}
     </div>
   );
 };
 
-const COLORS = [
-  { name: "Brown", hex: "#8B4513" },
-  { name: "White", hex: "#EEEEEE" },
-  { name: "Red", hex: "#E53E3E" },
-  { name: "Pink", hex: "#FFB6C1" },
-];
-const WEIGHTS = ["80 g", "90 g", "250 g", "100 g"];
-const MATERIALS = ["Cotton", "Fur", "Polyester", "Mohair"];
 
 export function ProductDetailPage() {
   const navigate = useNavigate();
@@ -89,12 +81,13 @@ export function ProductDetailPage() {
 
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState("");
-  const [selectedColor, setSelectedColor] = useState("Brown");
-  const [selectedWeight, setSelectedWeight] = useState("80 g");
-  const [selectedMaterial, setSelectedMaterial] = useState("Cotton");
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedWeight, setSelectedWeight] = useState("");
+  const [selectedMaterial, setSelectedMaterial] = useState("");
   const [stickyVisible, setStickyVisible] = useState(false);
   const [stickyDismissed, setStickyDismissed] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const galleryRef = useRef(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -107,14 +100,6 @@ export function ProductDetailPage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    // Reset selections when product changes
-    if (product) {
-      setSelectedImage("");
-      setSelectedColor("Brown");
-    }
-  }, [product?.id]);
-
   const gallery = useMemo(() => {
     if (!product) return [];
     return product.images?.length ? product.images : [product.image].filter(Boolean);
@@ -125,12 +110,35 @@ export function ProductDetailPage() {
     [product?.id, products]
   );
 
+  useEffect(() => {
+    // Reset selections when product changes
+    if (product) {
+      setSelectedImage("");
+      setSelectedColor(product.colors?.[0]?.name || "");
+      setSelectedWeight(product.weights?.[0] || "");
+      setSelectedMaterial(product.materials?.[0] || "");
+    }
+  }, [product?.id, product]);
+
+  useEffect(() => {
+    const el = galleryRef.current;
+    if (!el) return;
+    const handleScroll = () => {
+      const index = Math.round(el.scrollLeft / el.offsetWidth);
+      if (gallery[index] && gallery[index] !== selectedImage) {
+        setSelectedImage(gallery[index]);
+      }
+    };
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [gallery, selectedImage]);
+
   // If we have literally nothing (no cache, no mock), show a full-page pulse
   if (!product && isLoading) {
     return (
       <div className="page-shell py-10 animate-pulse">
         <div className="grid lg:grid-cols-2 gap-12">
-          <div className="h-[400px] bg-slate-100 rounded-2xl" />
+          <div className="h-96 bg-slate-100 rounded-2xl" />
           <div className="space-y-6">
             <div className="h-10 w-3/4 bg-slate-100" />
             <div className="h-6 w-1/4 bg-slate-100" />
@@ -158,21 +166,45 @@ export function ProductDetailPage() {
 
           {/* LEFT — Gallery (sticky only on desktop) */}
           <div className="lg:sticky lg:top-28 flex flex-col gap-4">
-            {/* Main image */}
-            <div className="w-full rounded-2xl bg-slate-50 flex items-center justify-center overflow-hidden min-h-[260px] sm:min-h-[360px] p-4">
-              <img
-                src={mainImage}
-                alt={product.name}
-                className="max-h-[420px] lg:max-h-[480px] w-full object-contain mix-blend-multiply transition-all duration-300"
-              />
+            {/* Main image scrollable container */}
+            <div 
+              ref={galleryRef}
+              className="w-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar rounded-2xl bg-slate-50 gap-0"
+            >
+              {gallery.map((img, i) => (
+                <div key={`${img}-${i}`} className="min-w-full snap-center flex items-center justify-center min-h-[320px] sm:min-h-[480px] p-6">
+                  <img
+                    src={img}
+                    alt={`${product.name} vision ${i}`}
+                    className="max-h-[320px] sm:max-h-[480px] w-full object-contain mix-blend-multiply"
+                  />
+                </div>
+              ))}
             </div>
-            {/* Horizontal thumbnails on mobile, horizontal on all sizes */}
-            <div className="flex flex-row gap-3 overflow-x-auto pb-1">
-              {gallery.map((img) => (
+
+            {/* Indicator dots for mobile scroll */}
+            <div className="flex justify-center gap-1.5 lg:hidden px-2">
+              {gallery.map((_, i) => {
+                 const isActive = selectedImage === gallery[i] || (!selectedImage && i === 0);
+                 return (
+                   <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${isActive ? "w-6 bg-slate-900" : "w-1.5 bg-slate-200"}`} />
+                 );
+              })}
+            </div>
+
+            {/* Horizontal thumbnails */}
+            <div className="flex flex-row gap-3 overflow-x-auto pb-2 scroll-smooth px-1">
+              {gallery.map((img, i) => (
                 <button
-                  key={img}
-                  onClick={() => setSelectedImage(img)}
-                  className={`flex-shrink-0 w-[62px] h-[62px] sm:w-[68px] sm:h-[68px] rounded-xl border-2 p-1 transition-all ${mainImage === img ? "border-slate-700" : "border-slate-100 hover:border-slate-300"}`}
+                  key={`${img}-${i}-thumb`}
+                  onClick={() => {
+                    setSelectedImage(img);
+                    galleryRef.current?.scrollTo({
+                      left: galleryRef.current.offsetWidth * i,
+                      behavior: "smooth"
+                    });
+                  }}
+                  className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl border-2 p-1 transition-all ${ (selectedImage === img || (!selectedImage && i === 0)) ? "border-slate-700 bg-white" : "border-slate-100 hover:border-slate-300 bg-slate-50"}`}
                 >
                   <img src={img} alt="" className="w-full h-full object-contain mix-blend-multiply" />
                 </button>
@@ -184,8 +216,8 @@ export function ProductDetailPage() {
           <div className="space-y-5 min-w-0">
             {/* Title + desc + stars + price */}
             <div>
-              <h1 className="text-2xl font-bold text-brand-ink font-display mb-2">{product.name}</h1>
-              <p className="text-slate-500 text-[14px] leading-relaxed line-clamp-2">
+              <h1 className="text-2xl font-bold text-slate-900 font-display mb-2">{product.name}</h1>
+              <p className="text-slate-500 text-sm leading-relaxed line-clamp-2">
                 {product.description || "A wonderful addition to your collection..."}
               </p>
               
@@ -196,78 +228,84 @@ export function ProductDetailPage() {
                 <span className="text-slate-400 text-xs">(4.8 / 5.0)</span>
               </div>
               
-              <div className="mt-4 text-2xl font-bold text-brand-ink">
+              <div className="mt-4 text-2xl font-bold text-slate-900">
                 {formatCurrency(product.price)}
               </div>
             </div>
 
             {/* Color */}
-            <div>
-              <p className="text-[13px] font-bold text-brand-ink mb-2">
-                Color: <span className="font-normal text-slate-500">{selectedColor}</span>
-              </p>
-              <div className="flex gap-2">
-                {COLORS.map((c) => (
-                  <button
-                    key={c.name}
-                    onClick={() => setSelectedColor(c.name)}
-                    className={`w-6 h-6 rounded-md border-2 transition-all ${selectedColor === c.name ? "ring-2 ring-brand-ink ring-offset-2 border-transparent" : "border-slate-200"}`}
-                    style={{ backgroundColor: c.hex }}
-                    aria-label={c.name}
-                  />
-                ))}
+            {product.colors && product.colors.length > 0 && (
+              <div>
+                <p className="text-sm font-bold text-slate-900 mb-2">
+                  Color: <span className="font-normal text-slate-500">{selectedColor}</span>
+                </p>
+                <div className="flex gap-2">
+                  {product.colors.map((c) => (
+                    <button
+                      key={c.name}
+                      onClick={() => setSelectedColor(c.name)}
+                      className={`w-6 h-6 rounded-md border-2 transition-all ${selectedColor === c.name ? "ring-2 ring-slate-900 ring-offset-2 border-transparent" : "border-slate-200"}`}
+                      style={{ backgroundColor: c.hex }}
+                      aria-label={c.name}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Weight */}
-            <div>
-              <p className="text-[13px] font-bold text-brand-ink mb-2">
-                Weight: <span className="font-normal text-slate-500">{selectedWeight}</span>
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {WEIGHTS.map((w) => (
-                  <button
-                    key={w}
-                    onClick={() => setSelectedWeight(w)}
-                    className={`px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all ${selectedWeight === w ? "bg-brand-ink text-white border-brand-ink" : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"}`}
-                  >
-                    {w}
-                  </button>
-                ))}
+            {product.weights && product.weights.length > 0 && (
+              <div>
+                <p className="text-sm font-bold text-slate-900 mb-2">
+                  Weight: <span className="font-normal text-slate-500">{selectedWeight}</span>
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {product.weights.map((w) => (
+                    <button
+                      key={w}
+                      onClick={() => setSelectedWeight(w)}
+                      className={`px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all ${selectedWeight === w ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"}`}
+                    >
+                      {w}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Material */}
-            <div>
-              <p className="text-[13px] font-bold text-brand-ink mb-2">
-                Material: <span className="font-normal text-slate-500">{selectedMaterial}</span>
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {MATERIALS.map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => setSelectedMaterial(m)}
-                    className={`px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all ${selectedMaterial === m ? "bg-brand-ink text-white border-brand-ink" : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"}`}
-                  >
-                    {m}
-                  </button>
-                ))}
+            {product.materials && product.materials.length > 0 && (
+              <div>
+                <p className="text-sm font-bold text-slate-900 mb-2">
+                  Material: <span className="font-normal text-slate-500">{selectedMaterial}</span>
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {product.materials.map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => setSelectedMaterial(m)}
+                      className={`px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all ${selectedMaterial === m ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-600 border-slate-200 hover:border-slate-400"}`}
+                    >
+                      {m}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Qty + Add to Cart + Wishlist + Compare — all in ONE row */}
             <div className="flex items-center gap-3 flex-wrap">
               {/* Qty stepper */}
-              <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden h-[44px] text-sm font-bold flex-shrink-0">
+              <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden h-10 text-sm font-bold flex-shrink-0">
                 <button onClick={() => setQuantity((q) => Math.max(1, q - 1))} className="px-4 h-full text-slate-400 hover:bg-slate-50 transition-colors select-none">−</button>
-                <span className="px-4 text-brand-ink">{quantity}</span>
+                <span className="px-4 text-slate-900">{quantity}</span>
                 <button onClick={() => setQuantity((q) => q + 1)} className="px-4 h-full text-slate-400 hover:bg-slate-50 transition-colors select-none">+</button>
               </div>
 
               {/* Add to cart */}
               <button
                 onClick={handleAddToCart}
-                className="flex-1 min-w-0 h-[44px] rounded-xl bg-[#ff8b87] text-white text-sm font-bold hover:bg-[#ff7777] transition-colors"
+                className="flex-1 min-w-0 h-10 rounded-xl bg-[#ff8b87] text-white text-sm font-bold hover:bg-[#ff7777] transition-colors"
               >
                 Add to cart
               </button>
@@ -275,7 +313,7 @@ export function ProductDetailPage() {
               {/* Wishlist */}
               <button
                 onClick={() => toggleWishlist(product.id)}
-                className={`w-[42px] h-[42px] rounded-xl border flex items-center justify-center transition-all ${isWishlisted(product.id) ? "bg-[#ff8b87] border-[#ff8b87] text-white" : "border-slate-200 text-slate-500 hover:border-slate-400 bg-white"}`}
+                className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all ${isWishlisted(product.id) ? "bg-[#ff8b87] border-[#ff8b87] text-white" : "border-slate-200 text-slate-500 hover:border-slate-400 bg-white"}`}
                 aria-label="Wishlist"
               >
                 <HeartIcon filled={isWishlisted(product.id)} />
@@ -283,7 +321,7 @@ export function ProductDetailPage() {
 
               {/* Compare */}
               <button
-                className="w-[42px] h-[42px] rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:border-slate-400 bg-white transition-all"
+                className="w-10 h-10 rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:border-slate-400 bg-white transition-all"
                 aria-label="Compare"
               >
                 <CompareIcon />
@@ -293,36 +331,36 @@ export function ProductDetailPage() {
             {/* Buy it now */}
             <button
               onClick={handleBuyNow}
-              className="w-full h-[44px] rounded-xl bg-brand-ink text-white text-sm font-bold hover:bg-slate-800 transition-colors"
+              className="w-full h-10 rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-800 transition-colors"
             >
               Buy it now
             </button>
 
             {/* Share */}
-            <button className="flex items-center gap-1.5 text-[13px] font-semibold text-slate-600 hover:text-[#ff8b87] transition-colors">
+            <button className="flex items-center gap-1.5 text-sm font-semibold text-slate-600 hover:text-[#ff8b87] transition-colors">
               <ShareIcon /> Share
             </button>
 
             {/* Shipping & Return info */}
-            <div className="space-y-2.5 text-[13px] text-slate-500">
+            <div className="space-y-2.5 text-sm text-slate-500">
               <div className="flex items-start gap-2.5">
                 <TruckIcon />
-                <p>Estimated delivery: <strong className="text-brand-ink">12-28 days</strong> (International); <strong className="text-brand-ink">3-6 days</strong> (United States).</p>
+                <p>Estimated delivery: <strong className="text-slate-900">12-28 days</strong> (International); <strong className="text-slate-900">3-6 days</strong> (United States).</p>
               </div>
               <div className="flex items-start gap-2.5">
                 <ReturnIcon />
-                <p>Return within <strong className="text-brand-ink">45 days</strong> of purchase. Duties &amp; taxes are non-refundable.</p>
+                <p>Return within <strong className="text-slate-900">45 days</strong> of purchase. Duties &amp; taxes are non-refundable.</p>
               </div>
             </div>
 
             {/* Payment badges */}
             <div className="border border-slate-100 rounded-2xl p-4 text-center">
-              <p className="text-[12px] font-semibold text-brand-ink mb-3">Guarantee safe and secure checkout</p>
+              <p className="text-xs font-semibold text-slate-900 mb-3">Guarantee safe and secure checkout</p>
               <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                <div className="px-2.5 py-1 text-[9px] font-extrabold text-white bg-blue-600 rounded tracking-wider">VISA</div>
-                <div className="px-2.5 py-1 text-[9px] font-extrabold text-white bg-red-500 rounded tracking-wider">MC</div>
-                <div className="px-2.5 py-1 text-[9px] font-extrabold text-white bg-blue-400 rounded tracking-wider">AMEX</div>
-                <div className="px-2.5 py-1 text-[9px] font-extrabold text-[#003087] rounded italic">PayPal</div>
+                <div className="px-2.5 py-1 text-xs font-extrabold text-white bg-blue-600 rounded tracking-wider">VISA</div>
+                <div className="px-2.5 py-1 text-xs font-extrabold text-white bg-red-500 rounded tracking-wider">MC</div>
+                <div className="px-2.5 py-1 text-xs font-extrabold text-white bg-blue-400 rounded tracking-wider">AMEX</div>
+                <div className="px-2.5 py-1 text-xs font-extrabold text-[#003087] rounded italic">PayPal</div>
               </div>
             </div>
 
@@ -338,13 +376,27 @@ export function ProductDetailPage() {
                 )}
               </Accordion>
               <Accordion title="Materials & Care">
-                <p>Premium {selectedMaterial} fibers, safe and hypoallergenic. Spot clean with a damp cloth and mild soap. Air dry only.</p>
+                {product.materialsAndCare ? <p className="whitespace-pre-line leading-relaxed">{product.materialsAndCare}</p> : <p>Premium safe fibers. Spot clean with a damp cloth and mild soap. Air dry only.</p>}
               </Accordion>
-              <Accordion title="Free Shipping & Returns">
-                <p>Free standard shipping on all orders over ₹499. Easy 30-day returns if you&apos;re not completely happy with your purchase.</p>
+              <Accordion title="Shipping & Returns">
+                {product.shippingAndReturns ? <p className="whitespace-pre-line leading-relaxed">{product.shippingAndReturns}</p> : <p>Free standard shipping on all orders over ₹499. Easy 30-day returns if you're not completely happy with your purchase.</p>}
               </Accordion>
-              <Accordion title="Reviews (12)">
-                <p>Authentic reviews from our customers who love this product! 4.8 out of 5 stars based on 12 verified purchases.</p>
+              <Accordion title={`Reviews (${product.reviews?.length || 0})`}>
+                {product.reviews && product.reviews.length > 0 ? (
+                  <div className="space-y-4">
+                    {product.reviews.filter(r => r.isApproved).map(r => (
+                      <div key={r.id} className="border-b border-dashed border-slate-100 pb-3 last:border-0 last:pb-0">
+                         <div className="flex items-center gap-2 mb-1">
+                           <span className="text-amber-400 text-xs">{"★".repeat(r.rating || 5)}</span>
+                           <span className="font-semibold text-slate-800">{r.title}</span>
+                         </div>
+                         <p className="text-slate-600 text-sm leading-relaxed">{r.body}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No verified reviews yet for this product. Be the first to purchase and review!</p>
+                )}
               </Accordion>
             </div>
           </div>
@@ -353,7 +405,7 @@ export function ProductDetailPage() {
 
       {/* ── Recommended Products ── */}
       <div className="page-shell pb-10 md:pb-28 pt-8 sm:pt-10">
-        <h2 className="font-display text-xl font-bold text-brand-ink mb-6">Recommended Products</h2>
+        <h2 className="font-display text-xl font-bold text-slate-900 mb-6">Recommended Products</h2>
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {related.map((item) => (
             <ProductCard key={item.id} product={item} />
@@ -365,13 +417,13 @@ export function ProductDetailPage() {
       <div
         className={`fixed bottom-0 left-0 right-0 z-50 hidden md:block bg-white border-t border-slate-200 shadow-[0_-6px_24px_rgba(0,0,0,0.08)] transition-transform duration-400 ${stickyVisible && !stickyDismissed ? "translate-y-0" : "translate-y-full"}`}
       >
-        <div className="mx-auto max-w-[1400px] px-8 flex items-center h-[76px] gap-6">
+        <div className="mx-auto max-w-[1400px] px-8 flex items-center h-20 gap-6">
           {/* Product thumb + name */}
           <div className="flex items-center gap-3 flex-shrink-0 min-w-0">
             <img src={mainImage} alt="" className="w-11 h-11 object-contain rounded-xl border border-slate-100 p-1 bg-slate-50 flex-shrink-0 mix-blend-multiply" />
             <div className="min-w-0">
-              <p className="font-bold text-[14px] text-brand-ink truncate font-display">{product.name}</p>
-              <p className="text-[13px] text-slate-500">{formatCurrency(product.price)}</p>
+              <p className="font-bold text-sm text-slate-900 truncate font-display">{product.name}</p>
+              <p className="text-sm text-slate-500">{formatCurrency(product.price)}</p>
             </div>
           </div>
 
@@ -381,16 +433,16 @@ export function ProductDetailPage() {
           {/* Variant selects */}
           <div className="hidden lg:flex items-end gap-6">
             {[
-              { label: "Color",    value: selectedColor,    options: COLORS.map(c => c.name), onChange: setSelectedColor },
-              { label: "Weight",   value: selectedWeight,   options: WEIGHTS,                 onChange: setSelectedWeight },
-              { label: "Material", value: selectedMaterial, options: MATERIALS,               onChange: setSelectedMaterial },
+              ...(product.colors?.length ? [{ label: "Color", value: selectedColor, options: product.colors.map(c => c.name), onChange: setSelectedColor }] : []),
+              ...(product.weights?.length ? [{ label: "Weight", value: selectedWeight, options: product.weights, onChange: setSelectedWeight }] : []),
+              ...(product.materials?.length ? [{ label: "Material", value: selectedMaterial, options: product.materials, onChange: setSelectedMaterial }] : []),
             ].map(({ label, value, options, onChange }) => (
-              <div key={label} className="flex flex-col gap-1 min-w-[110px]">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-brand-ink">{label}</span>
+              <div key={label} className="flex flex-col gap-1 min-w-28">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-900">{label}</span>
                 <select
                   value={value}
                   onChange={(e) => onChange(e.target.value)}
-                  className="border border-slate-200 rounded-lg px-3 py-1.5 text-[13px] font-semibold text-slate-700 bg-white outline-none focus:ring-1 focus:ring-brand-ink cursor-pointer"
+                  className="border border-slate-200 rounded-lg px-3 py-1.5 text-sm font-semibold text-slate-700 bg-white outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer"
                 >
                   {options.map((o) => <option key={o} value={o}>{o}</option>)}
                 </select>
@@ -401,7 +453,7 @@ export function ProductDetailPage() {
           {/* Add to cart */}
           <button
             onClick={handleAddToCart}
-            className="flex-shrink-0 h-[42px] min-w-[140px] rounded-xl bg-[#ff8b87] text-white text-[14px] font-bold hover:bg-[#ff7777] transition-colors px-6 ml-4"
+            className="flex-shrink-0 h-10 min-w-36 rounded-xl bg-[#ff8b87] text-white text-sm font-bold hover:bg-[#ff7777] transition-colors px-6 ml-4"
           >
             Add to cart
           </button>
@@ -409,7 +461,7 @@ export function ProductDetailPage() {
           {/* Dismiss */}
           <button
             onClick={() => setStickyDismissed(true)}
-            className="flex-shrink-0 text-slate-400 hover:text-brand-ink transition-colors"
+            className="flex-shrink-0 text-slate-400 hover:text-slate-900 transition-colors"
             aria-label="Close"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">

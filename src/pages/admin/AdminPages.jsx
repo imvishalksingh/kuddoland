@@ -44,13 +44,13 @@ function formatCurrency(value) {
 
 function AdminEntry({ title, description, actions, children }) {
   return (
-    <div className="space-y-6">
-      <Seo title={`${title} | Admin | Kuddosland`} description={description} />
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <div className="space-y-6 font-sans">
+      <Seo title={`${title} | Admin Workbench`} description={description} />
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between border-b border-slate-200 pb-5">
         <div>
-          <p className="chip">Admin panel</p>
-          <h1 className="mt-4 font-display text-4xl font-extrabold text-brand-ink">{title}</h1>
-          <p className="mt-2 text-slate-600">{description}</p>
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1 block">Workbench</span>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900">{title}</h1>
+          <p className="mt-1 text-sm text-slate-500">{description}</p>
         </div>
         {actions ? <div className="flex flex-wrap gap-3">{actions}</div> : null}
       </div>
@@ -61,30 +61,34 @@ function AdminEntry({ title, description, actions, children }) {
 
 function AdminCard({ title, subtitle, children }) {
   return (
-    <div className="panel space-y-4 p-5">
-      <div>
-        <h2 className="font-semibold text-brand-ink">{title}</h2>
-        {subtitle ? <p className="mt-1 text-sm text-slate-500">{subtitle}</p> : null}
+    <div className="bg-white rounded-lg border border-slate-200 shadow-sm">
+      {(title || subtitle) && (
+        <div className="border-b border-slate-100 px-6 py-4 bg-slate-50/50 rounded-t-lg">
+          <h2 className="text-base font-semibold text-slate-800">{title}</h2>
+          {subtitle ? <p className="mt-1 text-sm text-slate-500">{subtitle}</p> : null}
+        </div>
+      )}
+      <div className="p-6 space-y-5">
+        {children}
       </div>
-      {children}
     </div>
   );
 }
 
 function Field({ label, ...props }) {
   return (
-    <label className="space-y-2 text-sm font-semibold text-brand-ink">
-      <span>{label}</span>
-      <input className="w-full rounded-2xl border border-orange-200 px-4 py-3 text-sm font-medium text-slate-700" {...props} />
+    <label className="block space-y-1.5">
+      <span className="text-sm font-medium text-slate-700">{label}</span>
+      <input className="block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border outline-none transition-shadow" {...props} />
     </label>
   );
 }
 
 function SelectField({ label, children, ...props }) {
   return (
-    <label className="space-y-2 text-sm font-semibold text-brand-ink">
-      <span>{label}</span>
-      <select className="w-full rounded-2xl border border-orange-200 px-4 py-3 text-sm font-medium text-slate-700" {...props}>
+    <label className="block space-y-1.5">
+      <span className="text-sm font-medium text-slate-700">{label}</span>
+      <select className="block w-full rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border outline-none transition-shadow" {...props}>
         {children}
       </select>
     </label>
@@ -93,18 +97,18 @@ function SelectField({ label, children, ...props }) {
 
 function TextareaField({ label, ...props }) {
   return (
-    <label className="space-y-2 text-sm font-semibold text-brand-ink">
-      <span>{label}</span>
-      <textarea className="min-h-32 w-full rounded-2xl border border-orange-200 px-4 py-3 text-sm font-medium text-slate-700" {...props} />
+    <label className="block space-y-1.5">
+      <span className="text-sm font-medium text-slate-700">{label}</span>
+      <textarea className="block w-full min-h-32 rounded-md border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm px-3 py-2 border outline-none transition-shadow" {...props} />
     </label>
   );
 }
 
 function EmptyState({ title, description }) {
   return (
-    <div className="panel rounded-[28px] border-dashed p-8 text-center">
-      <h3 className="font-semibold text-brand-ink">{title}</h3>
-      <p className="mt-2 text-sm text-slate-500">{description}</p>
+    <div className="rounded-lg border-2 border-dashed border-slate-300 p-12 text-center hover:border-slate-400 transition-colors bg-slate-50">
+      <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+      <p className="mt-1 text-sm text-slate-500">{description}</p>
     </div>
   );
 }
@@ -123,6 +127,11 @@ const productInitialState = {
   brand: "",
   image: "",
   images: [],
+  colors: [],
+  materials: [],
+  weights: [],
+  materialsAndCare: "",
+  shippingAndReturns: "",
   featured: false,
   isActive: true,
 };
@@ -161,9 +170,9 @@ export function AdminDashboardPage() {
           { label: "Users", value: totals.users || 0 },
           { label: "Products", value: totals.products || 0 },
         ].map((item) => (
-          <div key={item.label} className="panel p-5">
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-500">{item.label}</p>
-            <p className="mt-3 font-display text-4xl font-extrabold text-brand-ink">{item.value}</p>
+          <div key={item.label} className="bg-white rounded-lg border border-slate-200 shadow-sm p-5">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">{item.label}</p>
+            <p className="mt-3 font-sans text-4xl font-extrabold text-slate-900">{item.value}</p>
           </div>
         ))}
       </div>
@@ -212,7 +221,7 @@ export function AdminProductsPage() {
         <div className="flex items-center gap-3">
           <label className={`cursor-pointer ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
             <input type="file" accept=".csv" className="hidden" onChange={handleBulkUpload} disabled={isUploading} />
-            <span className="inline-flex h-12 px-6 items-center justify-center rounded-xl bg-orange-100 text-[15px] font-bold text-orange-700 transition-colors hover:bg-orange-200">
+            <span className="inline-flex h-12 px-6 items-center justify-center rounded-xl bg-blue-50 text-base font-bold text-blue-700 transition-colors hover:bg-orange-200">
               Bulk Upload CSV
             </span>
           </label>
@@ -223,17 +232,17 @@ export function AdminProductsPage() {
       {!items.length ? <EmptyState title="No products yet" description="Create the first product to populate the catalog." /> : null}
       <div className="grid gap-4">
         {items.map((item) => (
-          <div key={item.id} className="panel flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:justify-between">
+          <div key={item.id} className="bg-white rounded-lg border border-slate-200 shadow-sm flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
-              <img className="h-20 w-20 rounded-2xl object-cover" src={item.image || "/cat1.png"} alt={item.name} />
+              <img className="h-20 w-20 rounded-md object-cover" src={item.image || "/cat1.png"} alt={item.name} />
               <div>
-                <p className="font-semibold text-brand-ink">{item.name}</p>
+                <p className="font-semibold text-slate-900">{item.name}</p>
                 <p className="text-sm text-slate-500">{item.brand} | SKU {item.sku}</p>
                 <p className="text-sm text-slate-500">{item.isActive ? "Active" : "Archived"} | Stock {item.stock} | {item.featured ? "Featured" : "Standard"}</p>
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <p className="min-w-24 text-sm font-bold text-brand-ink">{formatCurrency(item.price)}</p>
+              <p className="min-w-24 text-sm font-bold text-slate-900">{formatCurrency(item.price)}</p>
               <Link to={`/admin/products/${item.id}/edit`}><Button variant="secondary">Edit</Button></Link>
               {item.isActive ? <Button variant="secondary" onClick={() => archiveMutation.mutate(item.id)}>Archive</Button> : null}
             </div>
@@ -250,6 +259,7 @@ export function AdminProductFormPage() {
   const isEdit = Boolean(params.id);
   const queryClient = useQueryClient();
   const [form, setForm] = useState(productInitialState);
+  const [colorInput, setColorInput] = useState("[]");
   const { data: categoriesData } = useQuery({ queryKey: ["admin-categories"], queryFn: getCategories });
   const { data: productData } = useQuery({
     queryKey: ["admin-product", params.id],
@@ -274,9 +284,15 @@ export function AdminProductFormPage() {
       brand: item.brand || "",
       image: item.image || "",
       images: item.images || [],
+      colors: item.colors || [],
+      materials: item.materials || [],
+      weights: item.weights || [],
+      materialsAndCare: item.materialsAndCare || "",
+      shippingAndReturns: item.shippingAndReturns || "",
       featured: Boolean(item.featured),
       isActive: Boolean(item.isActive),
     });
+    setColorInput(JSON.stringify(item.colors || [], null, 2));
   }, [productData]);
 
   const mutation = useMutation({
@@ -328,6 +344,36 @@ export function AdminProductFormPage() {
           </div>
         </AdminCard>
 
+        
+        <AdminCard title="Variants & Rich Details">
+          <div className="grid gap-4 md:grid-cols-2">
+            <TextareaField 
+              label="Colors JSON (e.g. [{'name':'Red','hex':'#E53E3E'}])" 
+              value={colorInput} 
+              onChange={(e) => {
+                const val = e.target.value;
+                setColorInput(val);
+                try { 
+                  const parsed = JSON.parse(val);
+                  if (Array.isArray(parsed)) {
+                    setForm(c => ({...c, colors: parsed}));
+                  }
+                } catch(err){
+                  // Keep the local string state, but don't update the main form yet
+                }
+              }} 
+            />
+            <div className="space-y-4">
+              <Field label="Materials (comma separated)" value={form.materials?.join(', ')} onChange={e => setForm(c => ({...c, materials: e.target.value.split(',').map(s=>s.trim()).filter(Boolean)}))} />
+              <Field label="Weights (comma separated)" value={form.weights?.join(', ')} onChange={e => setForm(c => ({...c, weights: e.target.value.split(',').map(s=>s.trim()).filter(Boolean)}))} />
+            </div>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 mt-4">
+            <TextareaField label="Materials & Care description" value={form.materialsAndCare} onChange={(e) => setForm((current) => ({ ...current, materialsAndCare: e.target.value }))} />
+            <TextareaField label="Shipping & Returns description" value={form.shippingAndReturns} onChange={(e) => setForm((current) => ({ ...current, shippingAndReturns: e.target.value }))} />
+          </div>
+        </AdminCard>
+  
         <AdminCard title="Catalog placement">
           <div className="grid gap-4 md:grid-cols-2">
             <SelectField label="Category" value={form.categoryId} onChange={(event) => setForm((current) => ({ ...current, categoryId: event.target.value }))}>
@@ -347,10 +393,10 @@ export function AdminProductFormPage() {
 
             {form.images.length > 0 && (
               <div className="space-y-2">
-                <span className="text-sm font-semibold text-brand-ink">Product Media ({form.images.length})</span>
+                <span className="text-sm font-semibold text-slate-900">Product Media ({form.images.length})</span>
                 <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
                   {form.images.map((url, index) => (
-                    <div key={`${url}-${index}`} className="group relative aspect-square overflow-hidden rounded-2xl border border-orange-100 bg-slate-50 shadow-sm">
+                    <div key={`${url}-${index}`} className="group relative aspect-square overflow-hidden rounded-md border border-slate-200 bg-slate-50 shadow-sm">
                       <img src={url} className="h-full w-full object-cover transition-transform group-hover:scale-110" alt={`Product ${index}`} />
                       <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                         <button
@@ -373,7 +419,7 @@ export function AdminProductFormPage() {
                         </button>
                       </div>
                       {form.image === url && (
-                        <div className="absolute inset-x-0 bottom-0 bg-brand-ink/70 px-1 py-0.5 text-center text-[9px] font-bold text-white uppercase tracking-wider">
+                        <div className="absolute inset-x-0 bottom-0 bg-brand-ink/70 px-1 py-0.5 text-center text-xs font-bold text-white uppercase tracking-wider">
                           Primary
                         </div>
                       )}
@@ -383,10 +429,10 @@ export function AdminProductFormPage() {
               </div>
             )}
           </div>
-          <label className="space-y-2 text-sm font-semibold text-brand-ink">
+          <label className="space-y-2 text-sm font-semibold text-slate-900">
             <span>Upload image</span>
             <input
-              className="block w-full rounded-2xl border border-orange-200 bg-white px-4 py-3 text-sm"
+              className="block w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-sm"
               type="file"
               accept="image/*"
               onChange={(event) => {
@@ -397,11 +443,11 @@ export function AdminProductFormPage() {
               }}
             />
           </label>
-          <label className="flex items-center gap-3 text-sm font-semibold text-brand-ink">
+          <label className="flex items-center gap-3 text-sm font-semibold text-slate-900">
             <input type="checkbox" checked={form.featured} onChange={(event) => setForm((current) => ({ ...current, featured: event.target.checked }))} />
             Featured product
           </label>
-          <label className="flex items-center gap-3 text-sm font-semibold text-brand-ink">
+          <label className="flex items-center gap-3 text-sm font-semibold text-slate-900">
             <input type="checkbox" checked={form.isActive} onChange={(event) => setForm((current) => ({ ...current, isActive: event.target.checked }))} />
             Active on storefront
           </label>
@@ -439,14 +485,14 @@ export function AdminOrdersPage() {
     <AdminEntry title="Order operations" description="Review order state, open details, and update statuses from one place.">
       <div className="grid gap-4">
         {items.map((item) => (
-          <div key={item.id} className="panel flex flex-col gap-4 p-5 xl:flex-row xl:items-center xl:justify-between">
+          <div key={item.id} className="bg-white rounded-lg border border-slate-200 shadow-sm flex flex-col gap-4 p-5 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <p className="font-semibold text-brand-ink">{item.id}</p>
+              <p className="font-semibold text-slate-900">{item.id}</p>
               <p className="text-sm text-slate-500">{item.customerName} | {item.status} | {new Date(item.createdAt).toLocaleDateString()}</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-sm font-bold text-brand-ink">{formatCurrency(item.total)}</p>
-              <select className="rounded-full border border-orange-200 px-4 py-2 text-sm" value={item.status} onChange={(event) => statusMutation.mutate({ id: item.id, status: event.target.value })}>
+              <p className="text-sm font-bold text-slate-900">{formatCurrency(item.total)}</p>
+              <select className="rounded-full border border-slate-300 px-4 py-2 text-sm" value={item.status} onChange={(event) => statusMutation.mutate({ id: item.id, status: event.target.value })}>
                 {["PLACED", "PAYMENT_PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED", "RETURN_REQUESTED", "REFUNDED"].map((status) => (
                   <option key={status} value={status}>{status}</option>
                 ))}
@@ -517,10 +563,10 @@ export function AdminOrderDetailPage() {
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <AdminCard title="Order summary">
           <div className="grid gap-2 text-sm text-slate-600">
-            <p><span className="font-semibold text-brand-ink">Customer:</span> {item.customerName}</p>
-            <p><span className="font-semibold text-brand-ink">Status:</span> {item.status}</p>
-            <p><span className="font-semibold text-brand-ink">Total:</span> {formatCurrency(item.total)}</p>
-            <p><span className="font-semibold text-brand-ink">Placed:</span> {new Date(item.createdAt).toLocaleString()}</p>
+            <p><span className="font-semibold text-slate-900">Customer:</span> {item.customerName}</p>
+            <p><span className="font-semibold text-slate-900">Status:</span> {item.status}</p>
+            <p><span className="font-semibold text-slate-900">Total:</span> {formatCurrency(item.total)}</p>
+            <p><span className="font-semibold text-slate-900">Placed:</span> {new Date(item.createdAt).toLocaleString()}</p>
           </div>
           <SelectField label="Update status" value={item.status} onChange={(event) => updateStatusMutation.mutate(event.target.value)}>
             {["PLACED", "PAYMENT_PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED", "RETURN_REQUESTED", "REFUNDED"].map((status) => (
@@ -536,7 +582,7 @@ export function AdminOrderDetailPage() {
             <Field label="Tracking URL" value={shipmentForm.trackingUrl} onChange={(event) => setShipmentForm((current) => ({ ...current, trackingUrl: event.target.value }))} />
             <Button onClick={() => shipmentMutation.mutate(shipmentForm)}>Assign shipment</Button>
           </div>
-          <div className="grid gap-4 border-t border-orange-100 pt-4">
+          <div className="grid gap-4 border-t border-slate-200 pt-4">
             <Field label="Refund amount" type="number" value={refundAmount} onChange={(event) => setRefundAmount(event.target.value)} />
             <Button variant="secondary" onClick={() => refundMutation.mutate({ amount: Number(refundAmount || item.total) })}>Refund order</Button>
           </div>
@@ -545,9 +591,22 @@ export function AdminOrderDetailPage() {
         <AdminCard title="Line items">
           <div className="space-y-3">
             {item.items.map((orderItem) => (
-              <div key={orderItem.id} className="rounded-2xl border border-orange-100 p-4">
-                <p className="font-semibold text-brand-ink">{orderItem.productSnapshot?.name || orderItem.productId}</p>
-                <p className="mt-1 text-sm text-slate-500">Qty {orderItem.quantity} | {formatCurrency(orderItem.price)}</p>
+              <div key={orderItem.id} className="rounded-md border border-slate-200 p-4 flex items-center gap-4 bg-white">
+                <div className="relative h-16 w-16 rounded bg-slate-50 border border-slate-200 flex-shrink-0 flex items-center justify-center p-1">
+                   <img src={orderItem.productSnapshot?.image || "/cat1.png"} alt={orderItem.productSnapshot?.name || 'Product'} className="h-full w-full object-contain mix-blend-multiply" />
+                   <span className="absolute -top-2 -right-2 bg-slate-600 text-white text-[11px] font-semibold w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
+                     {orderItem.quantity}
+                   </span>
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-slate-900">{orderItem.productSnapshot?.name || orderItem.productId}</p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Qty {orderItem.quantity} &nbsp;&bull;&nbsp; {formatCurrency(orderItem.price)} each
+                  </p>
+                </div>
+                <div className="font-bold text-slate-900 text-right">
+                  {formatCurrency(orderItem.quantity * orderItem.price)}
+                </div>
               </div>
             ))}
           </div>
@@ -555,13 +614,13 @@ export function AdminOrderDetailPage() {
 
         <AdminCard title="Payment and shipment">
           <div className="space-y-4 text-sm text-slate-600">
-            <p><span className="font-semibold text-brand-ink">Payment:</span> {item.payment?.status || "Not created"}</p>
-            <p><span className="font-semibold text-brand-ink">Method:</span> {item.payment?.method || "N/A"}</p>
-            <p><span className="font-semibold text-brand-ink">Shipment:</span> {item.shipment?.status || "Not assigned"}</p>
-            <p><span className="font-semibold text-brand-ink">AWB:</span> {item.shipment?.awb || "N/A"}</p>
-            <p><span className="font-semibold text-brand-ink">Return reason:</span> {item.returnReason || "N/A"}</p>
-            <p><span className="font-semibold text-brand-ink">Return details:</span> {item.returnDetails || "N/A"}</p>
-            <p><span className="font-semibold text-brand-ink">Return decision note:</span> {item.returnDecisionNote || "N/A"}</p>
+            <p><span className="font-semibold text-slate-900">Payment:</span> {item.payment?.status || "Not created"}</p>
+            <p><span className="font-semibold text-slate-900">Method:</span> {item.payment?.method || "N/A"}</p>
+            <p><span className="font-semibold text-slate-900">Shipment:</span> {item.shipment?.status || "Not assigned"}</p>
+            <p><span className="font-semibold text-slate-900">AWB:</span> {item.shipment?.awb || "N/A"}</p>
+            <p><span className="font-semibold text-slate-900">Return reason:</span> {item.returnReason || "N/A"}</p>
+            <p><span className="font-semibold text-slate-900">Return details:</span> {item.returnDetails || "N/A"}</p>
+            <p><span className="font-semibold text-slate-900">Return decision note:</span> {item.returnDecisionNote || "N/A"}</p>
             {item.status === "RETURN_REQUESTED" ? (
               <div className="flex flex-wrap gap-3 pt-3">
                 <Button variant="secondary" onClick={() => returnDecisionMutation.mutate({ action: "approve", note: "Approved from admin dashboard" })}>Approve return</Button>
@@ -592,9 +651,9 @@ export function AdminUsersPage() {
     <AdminEntry title="Customer management" description="Monitor account state, verification status, and moderation controls.">
       <div className="grid gap-4">
         {items.map((item) => (
-          <div key={item.id} className="panel flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
+          <div key={item.id} className="bg-white rounded-lg border border-slate-200 shadow-sm flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="font-semibold text-brand-ink">{item.name}</p>
+              <p className="font-semibold text-slate-900">{item.name}</p>
               <p className="text-sm text-slate-500">{item.email} | {item.role}</p>
               <p className="text-sm text-slate-500">{item.isVerified ? "Verified" : "Unverified"} | {item.orderCount} orders</p>
             </div>
@@ -647,7 +706,7 @@ export function AdminCouponsPage() {
             <Field label="Total uses" type="number" value={form.totalUses} onChange={(event) => setForm((current) => ({ ...current, totalUses: event.target.value }))} />
             <Field label="Per user limit" type="number" value={form.perUserLimit} onChange={(event) => setForm((current) => ({ ...current, perUserLimit: event.target.value }))} />
           </div>
-          <label className="flex items-center gap-3 text-sm font-semibold text-brand-ink">
+          <label className="flex items-center gap-3 text-sm font-semibold text-slate-900">
             <input type="checkbox" checked={form.isActive} onChange={(event) => setForm((current) => ({ ...current, isActive: event.target.checked }))} />
             Coupon active
           </label>
@@ -661,9 +720,9 @@ export function AdminCouponsPage() {
 
         <div className="grid gap-4">
           {items.map((item) => (
-            <div key={item.id} className="panel flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
+            <div key={item.id} className="bg-white rounded-lg border border-slate-200 shadow-sm flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="font-semibold text-brand-ink">{item.code}</p>
+                <p className="font-semibold text-slate-900">{item.code}</p>
                 <p className="text-sm text-slate-500">{item.type} | Value {item.value} | Used {item.usedCount}</p>
                 <p className="text-sm text-slate-500">{item.isActive ? "Active" : "Inactive"}</p>
               </div>
@@ -717,13 +776,13 @@ export function AdminShipmentsPage() {
 
         <div className="grid gap-4">
           {items.map((item) => (
-            <div key={item.id} className="panel flex flex-col gap-3 p-5 md:flex-row md:items-center md:justify-between">
+            <div key={item.id} className="bg-white rounded-lg border border-slate-200 shadow-sm flex flex-col gap-3 p-5 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="font-semibold text-brand-ink">{item.orderId}</p>
+                <p className="font-semibold text-slate-900">{item.orderId}</p>
                 <p className="text-sm text-slate-500">{item.courier || "Courier pending"} | {item.status}</p>
                 <p className="text-sm text-slate-500">{item.awb || "No AWB yet"}</p>
               </div>
-              {item.trackingUrl ? <a className="text-sm font-bold text-orange-500" href={item.trackingUrl} target="_blank" rel="noreferrer">Tracking link</a> : null}
+              {item.trackingUrl ? <a className="text-sm font-bold text-blue-600" href={item.trackingUrl} target="_blank" rel="noreferrer">Tracking link</a> : null}
             </div>
           ))}
         </div>
@@ -774,8 +833,8 @@ export function AdminCategoriesPage() {
 
         <div className="grid gap-4 md:grid-cols-2">
           {items.map((item) => (
-            <div key={item.id} className="panel p-5">
-              <p className="font-semibold text-brand-ink">{item.name}</p>
+            <div key={item.id} className="bg-white rounded-lg border border-slate-200 shadow-sm p-5">
+              <p className="font-semibold text-slate-900">{item.name}</p>
               <p className="mt-1 text-sm text-slate-500">{item.slug}</p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Button variant="secondary" onClick={() => { setEditing(item); setForm({ name: item.name, slug: item.slug, image: item.image || "" }); }}>Edit</Button>
@@ -814,12 +873,12 @@ export function AdminReviewsPage() {
     <AdminEntry title="Review moderation" description="Approve, reject, and remove customer reviews from the live catalog.">
       <div className="grid gap-4">
         {items.map((item) => (
-          <div key={item.id} className="panel p-5">
+          <div key={item.id} className="bg-white rounded-lg border border-slate-200 shadow-sm p-5">
             <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
               <div>
-                <p className="font-semibold text-brand-ink">{item.product?.name || "Product removed"}</p>
+                <p className="font-semibold text-slate-900">{item.product?.name || "Product removed"}</p>
                 <p className="text-sm text-slate-500">{item.user?.name || item.user?.email || "Unknown user"} | Rating {item.rating}</p>
-                <p className="mt-3 font-semibold text-brand-ink">{item.title}</p>
+                <p className="mt-3 font-semibold text-slate-900">{item.title}</p>
                 <p className="mt-2 text-sm leading-6 text-slate-600">{item.body}</p>
               </div>
               <div className="flex flex-wrap gap-3">
@@ -828,7 +887,7 @@ export function AdminReviewsPage() {
                 <Button variant="secondary" onClick={() => deleteMutation.mutate(item.id)}>Delete</Button>
               </div>
             </div>
-            <p className="mt-3 text-xs font-bold uppercase tracking-[0.18em] text-orange-500">{item.isApproved ? "Approved" : "Pending"}</p>
+            <p className="mt-3 text-xs font-bold uppercase tracking-[0.18em] text-blue-600">{item.isApproved ? "Approved" : "Pending"}</p>
           </div>
         ))}
       </div>
@@ -852,9 +911,9 @@ export function AdminAnalyticsPage() {
           { label: "Users", value: summary?.totals?.users || 0 },
           { label: "Products", value: summary?.totals?.products || 0 },
         ].map((item) => (
-          <div key={item.label} className="panel p-5">
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-500">{item.label}</p>
-            <p className="mt-3 font-display text-4xl font-extrabold text-brand-ink">{item.value}</p>
+          <div key={item.label} className="bg-white rounded-lg border border-slate-200 shadow-sm p-5">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-600">{item.label}</p>
+            <p className="mt-3 font-sans text-4xl font-extrabold text-slate-900">{item.value}</p>
           </div>
         ))}
       </div>
@@ -863,9 +922,9 @@ export function AdminAnalyticsPage() {
         <AdminCard title="Revenue feed" subtitle="Latest order revenue snapshots">
           <div className="space-y-3">
             {(revenue?.items || []).slice(-8).reverse().map((item) => (
-              <div key={`${item.date}-${item.total}`} className="flex items-center justify-between rounded-2xl border border-orange-100 px-4 py-3 text-sm">
+              <div key={`${item.date}-${item.total}`} className="flex items-center justify-between rounded-md border border-slate-200 px-4 py-3 text-sm">
                 <span className="font-medium text-slate-600">{item.date}</span>
-                <span className="font-bold text-brand-ink">{formatCurrency(item.total)}</span>
+                <span className="font-bold text-slate-900">{formatCurrency(item.total)}</span>
               </div>
             ))}
           </div>
@@ -874,9 +933,9 @@ export function AdminAnalyticsPage() {
         <AdminCard title="Top products" subtitle="Best-selling catalog items">
           <div className="space-y-3">
             {(topProducts?.items || []).map((item) => (
-              <div key={item.id} className="flex items-center justify-between rounded-2xl border border-orange-100 px-4 py-3 text-sm">
+              <div key={item.id} className="flex items-center justify-between rounded-md border border-slate-200 px-4 py-3 text-sm">
                 <span className="font-medium text-slate-600">{item.name}</span>
-                <span className="font-bold text-brand-ink">{item.soldCount} sold</span>
+                <span className="font-bold text-slate-900">{item.soldCount} sold</span>
               </div>
             ))}
           </div>
@@ -885,9 +944,9 @@ export function AdminAnalyticsPage() {
         <AdminCard title="Orders by status">
           <div className="space-y-3">
             {(ordersByStatus?.items || []).map((item) => (
-              <div key={item.status} className="flex items-center justify-between rounded-2xl border border-orange-100 px-4 py-3 text-sm">
+              <div key={item.status} className="flex items-center justify-between rounded-md border border-slate-200 px-4 py-3 text-sm">
                 <span className="font-medium text-slate-600">{item.status}</span>
-                <span className="font-bold text-brand-ink">{item.count}</span>
+                <span className="font-bold text-slate-900">{item.count}</span>
               </div>
             ))}
           </div>
@@ -896,9 +955,9 @@ export function AdminAnalyticsPage() {
         <AdminCard title="Category mix">
           <div className="space-y-3">
             {(categoryBreakdown?.items || []).map((item) => (
-              <div key={item.category} className="flex items-center justify-between rounded-2xl border border-orange-100 px-4 py-3 text-sm">
+              <div key={item.category} className="flex items-center justify-between rounded-md border border-slate-200 px-4 py-3 text-sm">
                 <span className="font-medium text-slate-600">{item.category}</span>
-                <span className="font-bold text-brand-ink">{item.count}</span>
+                <span className="font-bold text-slate-900">{item.count}</span>
               </div>
             ))}
           </div>
@@ -969,8 +1028,8 @@ export function AdminStorefrontSettingsPage() {
 
           <AdminCard title="Hero Sliders">
             {form.heroSliders?.map((slider, index) => (
-              <div key={index} className="space-y-4 border-b border-orange-100 pb-4 mb-4">
-                <h4 className="font-semibold text-brand-ink">Slider {index + 1}</h4>
+              <div key={index} className="space-y-4 border-b border-slate-200 pb-4 mb-4">
+                <h4 className="font-semibold text-slate-900">Slider {index + 1}</h4>
                 <div className="grid gap-4 md:grid-cols-2">
                   <Field label="Heading" value={slider.heading} onChange={e => {
                     const next = [...form.heroSliders];
@@ -1022,7 +1081,7 @@ export function AdminStorefrontSettingsPage() {
                         <input
                           type="file"
                           accept="image/*"
-                          className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-peach file:text-brand-coral hover:file:bg-orange-100 cursor-pointer"
+                          className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-peach file:text-brand-coral hover:file:bg-blue-50 cursor-pointer"
                           onChange={async (e) => {
                             const file = e.target.files[0];
                             if (!file) return;

@@ -71,7 +71,7 @@ export function CartPage() {
 
         {/* Sidebar Summary */}
         {items.length > 0 && (
-          <aside className="lg:w-[400px]">
+          <aside className="lg:w-96">
             <div className="sticky top-28 space-y-8 rounded-[40px] border border-orange-100 bg-white p-8 shadow-2xl shadow-brand-peach/20 lg:p-10">
               <h2 className="font-display text-4xl font-extrabold text-brand-ink">Summary</h2>
               

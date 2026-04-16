@@ -6,7 +6,7 @@ export function RouteGuard({ children, requireAdmin = false }) {
   const user = useAuthStore((state) => state.user);
 
   if (!user) {
-    return <Navigate to={requireAdmin ? "/login?role=admin" : "/login"} replace state={{ from: location.pathname }} />;
+    return <Navigate to="/" replace state={{ from: location.pathname }} />;
   }
 
   if (requireAdmin && user.role !== "ADMIN") {

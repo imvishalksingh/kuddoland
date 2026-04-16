@@ -51,3 +51,8 @@ export async function verifyEmailRequest(payload) {
   const { data } = await api.post("/auth/verify-email", payload);
   return data;
 }
+
+export async function loginWithGoogle(idToken) {
+  const { data } = await api.post("/auth/google", { idToken });
+  return data;
+}

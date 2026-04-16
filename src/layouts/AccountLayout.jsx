@@ -2,12 +2,13 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import toast from "react-hot-toast";
 import { ensureCsrfToken, logoutAllSessionsRequest } from "../api/auth.api";
+import { User, ShoppingBag, MapPin, Heart, LogOut } from "lucide-react";
 
 const links = [
-  { to: "/account", label: "Profile", icon: "👤" },
-  { to: "/account/orders", label: "Orders", icon: "📦" },
-  { to: "/account/addresses", label: "Addresses", icon: "📍" },
-  { to: "/account/wishlist", label: "Wishlist", icon: "✨" },
+  { to: "/account", label: "My Profile", icon: User },
+  { to: "/account/orders", label: "Orders History", icon: ShoppingBag },
+  { to: "/account/addresses", label: "Addresses", icon: MapPin },
+  { to: "/account/wishlist", label: "Wishlist", icon: Heart },
 ];
 
 export function AccountLayout() {
@@ -28,60 +29,53 @@ export function AccountLayout() {
   };
 
   return (
-    <div className="bg-[#fffaf5] min-h-[60vh]">
+    <div className="bg-slate-50 min-h-[60vh]">
       <main className="page-shell grid gap-8 py-12 lg:grid-cols-[280px_1fr]">
-        {/* Mobile Header / Welcome */}
-        <div className="lg:hidden mb-2 px-1">
-          <h1 className="font-display text-4xl font-extrabold text-brand-ink">Hello, {user?.name?.split(' ')[0] || 'User'}!</h1>
-          <p className="text-slate-500 font-body text-sm mt-1">Manage your orders and personal details.</p>
-        </div>
-
         <aside className="space-y-6">
-          <div className="panel border-none shadow-premium p-6 overflow-hidden relative">
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-brand-coral"></div>
-            <div className="hidden lg:block mb-8">
-              <p className="font-display text-3xl font-extrabold text-brand-ink leading-tight">My account</p>
-              <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-2">Personal Management</p>
+          <div className="rounded-2xl shadow-sm border border-slate-200 bg-white p-6 lg:p-8 flex flex-col items-center">
+            
+            <div className="mb-6 flex flex-col items-center text-center">
+              <img src={user?.avatar || "/cat1.png"} alt="Avatar" className="w-24 h-24 rounded-full object-cover shadow-sm bg-slate-100" />
+              <h2 className="font-sans font-bold text-[#001738] text-xl mt-4">{user?.name || "Kuddosland User"}</h2>
+              <p className="text-[#4d5e75] text-[15px] mt-1">{user?.email}</p>
             </div>
 
-            <nav className="space-y-1.5">
+            <nav className="space-y-2 w-full text-left">
               {links.map((link) => (
                 <NavLink
                   key={link.to}
                   to={link.to}
                   end={link.to === "/account"}
                   className={({ isActive }) => `
-                    flex items-center gap-4 rounded-2xl px-4 py-3.5 text-sm font-bold transition-all
+                    flex items-center gap-4 rounded-xl px-5 py-3.5 text-[15px] font-semibold transition-all
                     ${isActive
-                      ? "bg-brand-coral text-white shadow-lg shadow-brand-coral/20 -translate-x-1"
-                      : "text-slate-600 hover:bg-orange-50 hover:text-brand-coral"}
+                      ? "bg-black text-white shadow-md"
+                      : "text-[#4d5e75] hover:bg-slate-50"}
                   `}
                 >
-                  <span className="text-lg">{link.icon}</span>
-                  {link.label}
+                  {({ isActive }) => (
+                    <>
+                      <link.icon size={20} className={`${isActive ? "text-white" : "text-[#4d5e75]"}`} />
+                      {link.label}
+                    </>
+                  )}
                 </NavLink>
               ))}
             </nav>
 
-            <div className="mt-8 pt-6 border-t border-slate-100">
+            <div className="mt-8 pt-4 w-full text-left">
               <button
                 onClick={handleLogout}
-                className="flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 text-sm font-bold text-red-400 transition-all hover:bg-red-50 hover:text-red-500"
+                className="flex items-center gap-4 rounded-xl px-5 py-3.5 text-[15px] font-semibold text-[#f03e3e] transition-all hover:bg-red-50 w-full"
               >
-                <span className="text-lg">🚪</span>
+                <LogOut size={20} />
                 Logout
               </button>
             </div>
           </div>
-
-          <div className="panel bg-[#ff8b87] text-white p-6 border-none shadow-lg">
-            <p className="font-display text-lg font-bold">Need help?</p>
-            <p className="text-white/80 text-xs font-body mt-2 leading-relaxed">Our support team is active 24/7 for your toy queries & order assistance.</p>
-            <button className="mt-4 text-[11px] font-bold uppercase tracking-widest bg-white text-[#ff8b87] px-4 py-2 rounded-full hover:bg-white/90 transition">Contact us</button>
-          </div>
         </aside>
 
-        <section className="min-h-[400px]">
+        <section className="min-h-96">
           <Outlet />
         </section>
       </main>

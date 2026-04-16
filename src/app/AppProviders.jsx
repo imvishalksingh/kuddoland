@@ -6,6 +6,9 @@ import { ensureCsrfToken, refreshSession } from "../api/auth.api";
 import { queryClient } from "../lib/queryClient";
 import { useAuthStore } from "../store/authStore";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { AuthModal } from "../components/auth/AuthModal";
+
 export function AppProviders({ children }) {
   const setSession = useAuthStore((state) => state.setSession);
   const logout = useAuthStore((state) => state.logout);
@@ -42,10 +45,13 @@ export function AppProviders({ children }) {
 
   return (
     <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        {children}
-        <Toaster position="top-right" />
-      </QueryClientProvider>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ""}>
+        <QueryClientProvider client={queryClient}>
+          {children}
+          <AuthModal />
+          <Toaster position="top-right" />
+        </QueryClientProvider>
+      </GoogleOAuthProvider>
     </HelmetProvider>
   );
 }

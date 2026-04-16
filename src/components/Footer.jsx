@@ -59,11 +59,11 @@ export default function Footer() {
           {/* Columns 1-4 From Dynamic Storefront */}
           {columns.map(col => (
             <div key={col.title} className="footer-col space-y-4">
-              <h4 className="font-body text-[16px] font-bold text-[#FFD6A5]">{col.title}</h4>
+              <h4 className="font-body text-base font-bold text-[#FFD6A5]">{col.title}</h4>
               <ul className="space-y-3">
                 {col.links?.map(item => (
                   <li key={item.label}>
-                    <Link className="text-[13px] text-white/70 hover:text-white transition-colors" to={item.url || "#"}>{item.label}</Link>
+                    <Link className="text-sm text-white/70 hover:text-white transition-colors" to={item.url || "#"}>{item.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -72,17 +72,17 @@ export default function Footer() {
 
           {/* Column 5: Contact Us + Newsletter */}
           <div className="footer-col space-y-6">
-            <h4 className="font-body text-[16px] font-bold text-[#FFD6A5]">Newsletter</h4>
+            <h4 className="font-body text-base font-bold text-[#FFD6A5]">Newsletter</h4>
             <div className="space-y-4">
-              <p className="text-[12px] text-white/60 font-semibold">Subscribe for exclusive deals & toy releases</p>
+              <p className="text-xs text-white/60 font-semibold">Subscribe for exclusive deals & toy releases</p>
               <form className="space-y-3" onSubmit={e => e.preventDefault()}>
-                <input type="text" placeholder="Name" className="w-full text-[13px] px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white outline-none focus:border-brand-coral" />
-                <input type="email" placeholder="Email Address" className="w-full text-[13px] px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white outline-none focus:border-brand-coral" />
-                <button type="submit" className="w-full py-3 bg-[#ff8b87] text-white text-[13px] font-bold rounded-xl hover:bg-[#ff7777] transition shadow-lg">Submit</button>
+                <input type="text" placeholder="Name" className="w-full text-sm px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white outline-none focus:border-brand-coral" />
+                <input type="email" placeholder="Email Address" className="w-full text-sm px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white outline-none focus:border-brand-coral" />
+                <button type="submit" className="w-full py-3 bg-[#ff8b87] text-white text-sm font-bold rounded-xl hover:bg-[#ff7777] transition shadow-lg">Submit</button>
               </form>
             </div>
 
-            <div className="pt-4 border-t border-white/5 space-y-2 text-[13px] text-white/60">
+            <div className="pt-4 border-t border-white/5 space-y-2 text-sm text-white/60">
               <p>✉ {email}</p>
               <p>📞 {phone}</p>
             </div>
@@ -93,20 +93,20 @@ export default function Footer() {
         <div className="page-shell mt-12 pt-10 border-t border-white/5">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="space-y-3">
-              <h5 className="text-[14px] font-bold text-[#FFD6A5]">Head Office</h5>
-              <p className="text-[12px] text-white/50 leading-relaxed max-w-[280px]">
+              <h5 className="text-sm font-bold text-[#FFD6A5]">Head Office</h5>
+              <p className="text-xs text-white/50 leading-relaxed max-w-72">
                 Quarter Deck Queen Elizabeth 2 Ship - Port Rashid - Dubai UAE
               </p>
             </div>
             <div className="space-y-3">
-              <h5 className="text-[14px] font-bold text-[#FFD6A5]">Corporate Office</h5>
-              <p className="text-[12px] text-white/50 leading-relaxed max-w-[280px]">
+              <h5 className="text-sm font-bold text-[#FFD6A5]">Corporate Office</h5>
+              <p className="text-xs text-white/50 leading-relaxed max-w-72">
                 3rd Floor, Orchid Centre, Rapid Metro Station, near IILM Institute, next to Sector 54, Sector 53, Gurugram, Haryana 122002, India
               </p>
             </div>
             <div className="space-y-3">
-              <h5 className="text-[14px] font-bold text-[#FFD6A5]">Branch Office</h5>
-              <p className="text-[12px] text-white/50 leading-relaxed max-w-[280px]">
+              <h5 className="text-sm font-bold text-[#FFD6A5]">Branch Office</h5>
+              <p className="text-xs text-white/50 leading-relaxed max-w-72">
                 Bus Stand, 371,372/1 Galleria Complex, Panchsheel Colony, Garh Rd, near Sohrab Gate, Meerut, Uttar Pradesh 250001
               </p>
             </div>
@@ -115,7 +115,7 @@ export default function Footer() {
       </div>
 
       <div className="bg-black/20 py-6 border-t border-white/5 mt-4">
-        <div className="page-shell flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] font-bold uppercase tracking-widest text-white/40">
+        <div className="page-shell flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-bold uppercase tracking-widest text-white/40">
           <p>All Right Reserved Copyright 2020 Kuddosland Private Limited</p>
 
           <div className="flex gap-4 items-center">

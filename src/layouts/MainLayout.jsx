@@ -1,17 +1,27 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Header from "../components/Header";
 import CartDrawer from "../components/CartDrawer";
 import ScrollToTop from "../components/utils/ScrollToTop";
 import useDataStore from "../store/useDataStore";
+import { useAuthStore } from "../store/authStore";
 import { useEffect } from "react";
 import Footer from "../components/Footer";
 
 export function MainLayout() {
   const { storefront, loading, fetchStorefront } = useDataStore();
 
+  const location = useLocation();
+  const openAuthModal = useAuthStore((state) => state.openAuthModal);
+
   useEffect(() => {
     fetchStorefront();
   }, [fetchStorefront]);
+
+  useEffect(() => {
+    if (location.state?.from) {
+      openAuthModal();
+    }
+  }, [location.state, openAuthModal]);
 
   const email = storefront?.supportEmail || "support@kuddoland.com";
   const phone = storefront?.whatsappNumber || "+91-96905-60532";
