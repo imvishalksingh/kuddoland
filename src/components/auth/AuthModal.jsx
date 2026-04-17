@@ -54,6 +54,7 @@ export function AuthModal() {
             onSuccess={handleGoogleSuccess}
             onError={() => toast.error("Google Login failed")}
             useOneTap
+            use_fedcm_for_prompt={false}
             shape="square"
             width="100%"
             text="continue_with"
