@@ -149,7 +149,7 @@ export function ShopPage() {
           )}
         </nav>
 
-        <h1 style={{ fontFamily: "'Sora', sans-serif", fontSize: "clamp(24px, 6vw, 48px)", fontWeight: 800, color: "#0f1f3d", lineHeight: 1.1, margin: "0 0 10px" }}>
+        <h1 style={{ fontFamily: "'Sora', sans-serif", fontSize: "clamp(20px, 5vw, 40px)", fontWeight: 800, color: "#0f1f3d", lineHeight: 1.1, margin: "0 0 10px" }}>
           {activeCategoryName}
         </h1>
         <p style={{ fontSize: "clamp(13px, 3vw, 16px)", color: "#64748b", maxWidth: "500px", margin: "0 auto", lineHeight: 1.6 }}>

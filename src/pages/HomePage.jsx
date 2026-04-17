@@ -329,7 +329,7 @@ export function HomePage() {
 
       {/* Categories */}
       <section className="page-shell pt-10 sm:pt-14 lg:pt-20">
-        <h2 className="text-center font-body text-5xl font-medium leading-none text-black sm:text-5xl lg:text-7xl">Shop By Category</h2>
+        <h2 className="text-center font-body text-3xl font-medium leading-none text-black sm:text-4xl lg:text-5xl">Shop By Category</h2>
         <div className="mt-10 flex gap-6 overflow-x-auto pb-4 sm:mt-12 sm:gap-8 lg:grid lg:grid-cols-5 lg:overflow-visible lg:pb-0">
           {categories.slice(0, 5).map((item, i) => {
             const displayName = item.name.toLowerCase() === "stem kit" ? "Star Baby" : item.name;
@@ -371,7 +371,7 @@ export function HomePage() {
 
       {/* Age Filter */}
       <section className="page-shell pt-12 sm:pt-16 lg:pt-20">
-        <h2 className="text-center font-body text-4xl font-medium leading-none text-black sm:text-5xl lg:text-7xl">Shop By Age</h2>
+        <h2 className="text-center font-body text-3xl font-medium leading-none text-black sm:text-4xl lg:text-5xl">Shop By Age</h2>
         <div className="mt-10 grid grid-cols-2 gap-4 sm:mt-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-8">
           {ageItems.map((item) => {
             const ageParam = item.title === "0 - 1" ? "0-1 year" : `${item.title.replace(/\s/g, "")} years`;
@@ -395,7 +395,7 @@ export function HomePage() {
       <section className="page-shell pt-14 sm:pt-18 lg:pt-24">
         <article className="overflow-hidden rounded-[24px] bg-[#eef5fb] lg:rounded-[34px] relative group">
           <div className="px-5 py-12 text-center sm:px-8 lg:px-12 lg:py-20 flex flex-col items-center relative z-10">
-            <h2 className="font-body text-5xl font-medium text-black sm:text-6xl lg:text-7xl leading-[1.1]">
+            <h2 className="font-body text-3xl font-medium text-black sm:text-4xl lg:text-5xl leading-[1.1]">
               {homeSections.specialOfferHeading || "Special Offer"}
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-base text-black/70 sm:text-lg lg:text-2xl">
@@ -424,7 +424,7 @@ export function HomePage() {
       {/* Top Picks For Youngsters (Full Width for proper card size) */}
       <section className="page-shell pt-14 sm:pt-18 lg:pt-24">
         <div className="text-center mb-12">
-          <h2 className="font-body text-5xl font-medium leading-[1.1] text-black sm:text-6xl lg:text-6xl">{homeSections.topPicksHeading || "Top Picks For Youngsters"}</h2>
+          <h2 className="font-body text-3xl font-medium leading-[1.1] text-black sm:text-4xl lg:text-5xl">{homeSections.topPicksHeading || "Top Picks For Youngsters"}</h2>
           <div className="mt-4 h-1.5 w-24 bg-brand-coral rounded-full mx-auto" />
           <p className="mt-6 text-base text-slate-500 sm:text-lg lg:text-xl max-w-2xl mx-auto">
             Discover our curated collection of best-selling toys loved by parents and kids alike.
@@ -444,7 +444,7 @@ export function HomePage() {
         <div className="mb-8">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-slate-400 mb-2">Toy Collection</p>
           <div className="flex items-end justify-between gap-4">
-            <h2 className="font-body text-4xl font-extrabold leading-tight text-brand-ink sm:text-5xl lg:text-5xl">{homeSections.newArrivalsHeading || "New Arrivals"}</h2>
+            <h2 className="font-body text-3xl font-extrabold leading-tight text-brand-ink sm:text-4xl lg:text-5xl">{homeSections.newArrivalsHeading || "New Arrivals"}</h2>
             <Link to="/shop" className="text-xs font-bold text-slate-500 border-b-2 border-slate-100 pb-0.5 hover:text-brand-ink hover:border-brand-ink transition-all">
               View all &rarr;
             </Link>
@@ -481,7 +481,7 @@ export function HomePage() {
         <div className="mb-12 flex items-end justify-between gap-4">
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#4d5e75] mb-2">Our Blog</p>
-            <h2 className="font-body text-4xl font-bold leading-tight text-[#001738] sm:text-5xl lg:text-5xl tracking-tight">Latest News</h2>
+            <h2 className="font-body text-3xl font-bold leading-tight text-[#001738] sm:text-4xl lg:text-5xl tracking-tight">Latest News</h2>
             <div className="mt-4 h-1 w-10 bg-brand-coral rounded-full" />
           </div>
           <Link to="/about" className="text-[12px] font-black text-[#4d5e75] hover:text-brand-coral transition-colors uppercase tracking-widest border-b-2 border-transparent hover:border-brand-coral pb-1">
@@ -519,7 +519,7 @@ export function HomePage() {
 
       {/* Available On - Consolidated & Redesigned */}
       <section className="page-shell pt-10 pb-12 border-t border-slate-50 mt-10">
-        <h2 className="text-center font-body text-4xl font-bold leading-tight text-[#001738] sm:text-5xl lg:text-5xl tracking-tight mb-10 underline decoration-brand-coral decoration-4 underline-offset-8">Available On</h2>
+        <h2 className="text-center font-body text-3xl font-bold leading-tight text-[#001738] sm:text-4xl lg:text-5xl tracking-tight mb-10 underline decoration-brand-coral decoration-4 underline-offset-8">Available On</h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 lg:gap-6">
           {[
             { name: "Amazon", color: "#ff9900" },
@@ -541,7 +541,7 @@ export function HomePage() {
       <section className="page-shell py-12 lg:py-16">
         <div className="mx-auto max-w-3xl rounded-3xl bg-white p-8 sm:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
           <div className="text-center mb-8">
-            <h2 className="font-body text-4xl sm:text-5xl font-bold text-brand-ink">Contact Us For Bulk Orders</h2>
+            <h2 className="font-body text-3xl sm:text-4xl font-bold text-brand-ink">Contact Us For Bulk Orders</h2>
             <p className="text-slate-500 mt-2 text-base">Looking to purchase toys for a school, daycare, or retail outlet? Fill out the form below and our wholesale team will get back to you.</p>
           </div>
           <form className="grid gap-5 sm:grid-cols-2" onSubmit={e => { e.preventDefault(); alert("Bulk inquiry submitted. We will contact you soon!"); }}>
